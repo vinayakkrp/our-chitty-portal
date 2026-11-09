@@ -431,18 +431,13 @@ let popupInterval = null;
 let nameRollerInterval = null;
 let localDrawRunning = false;
 
-// Real-time synchronization listener with Firebase Database
-db.ref('chitty_portal_state').on('value', (snapshot) => {
+// 1. Listen for main application state changes
+db.ref('chitty_portal_state/data').on('value', (snapshot) => {
   const data = snapshot.val();
   if (data) {
     if (data.members) members = data.members;
     if (data.history) monthlyHistory = data.history;
     
-    // Check if a broadcast draw signal was sent
-    if (data.activeDrawSignal && !localDrawRunning) {
-      runClientDrawAnimation(data.activeDrawSignal.winnerName);
-    }
-
     if (monthlyHistory["Nov"] && monthlyHistory["Nov"].membersSnapshot) {
       monthlyHistory["Nov"].membersSnapshot.forEach(sm => { sm.paid = true; });
     }
@@ -452,14 +447,29 @@ db.ref('chitty_portal_state').on('value', (snapshot) => {
   render();
 });
 
+// 2. Listen specifically for broadcast draw triggers across all connected screens
+db.ref('chitty_portal_state/activeDrawSignal').on('value', (snapshot) => {
+  const signal = snapshot.val();
+  if (signal && signal.winnerName && !localDrawRunning) {
+    runClientDrawAnimation(signal.winnerName);
+  } else if (!signal) {
+    // Close modal if signal was removed
+    const modal = document.getElementById('drawPopupModal');
+    if (modal && modal.classList.contains('show') && !pendingWinner) {
+      modal.classList.remove('show');
+      clearInterval(popupInterval);
+      clearInterval(nameRollerInterval);
+    }
+  }
+});
+
 function saveStateToStorage() {
-  db.ref('chitty_portal_state').set({
+  db.ref('chitty_portal_state/data').set({
     members: members,
     history: monthlyHistory
   });
 }
 
-// Superadmin/Admin triggers broadcast draw for all connected screens
 function triggerBroadcastDraw() {
   if (userRole !== 'superadmin' && userRole !== 'admin') return;
   const eligible = members.filter(m => !m.winner);
@@ -468,11 +478,11 @@ function triggerBroadcastDraw() {
     return;
   }
 
-  // Pre-select winner randomly on server/superadmin side so everyone lands on the exact same winner
+  // Pre-select winner randomly so every connected device lands on the exact same name
   const randomIndex = Math.floor(Math.random() * eligible.length);
   const chosenWinner = eligible[randomIndex];
 
-  // Write broadcast signal to Firebase so all browsers trigger the animation together
+  // Push broadcast signal to Firebase (this immediately fires the listener on all devices)
   db.ref('chitty_portal_state/activeDrawSignal').set({
     winnerName: chosenWinner.name,
     timestamp: Date.now()
@@ -509,7 +519,7 @@ function runClientDrawAnimation(targetWinnerName) {
       document.getElementById('drawWinnerContent').style.display = 'block';
       document.getElementById('popupWinnerName').textContent = targetWinnerName;
 
-      // Only Superadmin/Admin sees the confirm button; normal members see a waiting notice
+      // Only Superadmin/Admin sees the confirm button; normal members & other admin view waiting notice
       const canSave = (userRole === 'superadmin' || userRole === 'admin');
       document.getElementById('winnerConfirmActionBtns').style.display = canSave ? 'flex' : 'none';
       document.getElementById('winnerWaitingNotice').style.display = canSave ? 'none' : 'block';
@@ -972,7 +982,6 @@ function closeModal(modalId) {
   document.getElementById(modalId).classList.remove('show');
   clearInterval(popupInterval);
   clearInterval(nameRollerInterval);
-  // Clear active draw signal on Firebase when closed
   db.ref('chitty_portal_state/activeDrawSignal').remove();
 }
 
@@ -1008,7 +1017,6 @@ function confirmPopupWinner() {
   resetContributionsForNewCycle();
 
   saveStateToStorage();
-  // Clear signal so modals close everywhere
   db.ref('chitty_portal_state/activeDrawSignal').remove();
   closeModal('drawPopupModal');
   switchTab(activeCode);
