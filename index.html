@@ -355,7 +355,8 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
         <button class="btn-dash" style="background:#eef1f6" onclick="closeModal('drawPopupModal')">Close</button>
       </div>
       <div id="winnerWaitingNotice" style="font-size:12px;color:var(--muted);margin-top:15px;display:none;">
-        Waiting for Superadmin to finalize and save the draw...
+        <div style="margin-bottom:10px;">Winner announced.</div>
+        <button class="btn-dash" style="background:#eef1f6;" onclick="closeModal('drawPopupModal')">Close Window</button>
       </div>
     </div>
   </div>
@@ -516,7 +517,7 @@ function runClientDrawAnimation(targetWinnerName) {
       document.getElementById('drawWinnerContent').style.display = 'block';
       document.getElementById('popupWinnerName').textContent = targetWinnerName;
 
-      // Only Superadmin sees the confirm button; admin/normal view waiting notice
+      // Only Superadmin sees the confirm button; admin/normal view waiting notice with close button
       const canSave = (userRole === 'superadmin');
       document.getElementById('winnerConfirmActionBtns').style.display = canSave ? 'flex' : 'none';
       document.getElementById('winnerWaitingNotice').style.display = canSave ? 'none' : 'block';
