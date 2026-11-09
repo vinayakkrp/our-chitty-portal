@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Chitty | Portal</title>
+<!-- Firebase SDK scripts for real-time synchronization -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <style>
 :root{--navy:#14243a;--blue:#315efb;--teal:#12a889;--bg:#f4f7fb;--muted:#718096;--line:#e7edf5;--white:#fff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--navy)}
@@ -371,6 +374,21 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
 </div>
 
 <script>
+// ================= FIREBASE REALTIME DATABASE CONFIGURATION =================
+const firebaseConfig = {
+  apiKey: "AIzaSyCZyKR9yh-Gw8Ty4EE2ub2a8zDaiHFsDmM",
+  authDomain: "our-chitty-portal.firebaseapp.com",
+  databaseURL: "https://our-chitty-portal-default-rtdb.firebaseio.com",
+  projectId: "our-chitty-portal",
+  storageBucket: "our-chitty-portal.firebasestorage.app",
+  messagingSenderId: "48054002135",
+  appId: "1:48054002135:web:eea48402789d06f1c16b92",
+  measurementId: "G-7GJTRW50FZ"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 let userRole = localStorage.getItem('chitty_role') || 'normal'; 
 const cycleNames = ["November", "December", "January", "February"];
 const cycleCodes = ["Nov", "Dec", "Jan", "Feb"];
@@ -394,7 +412,6 @@ const defaultMembers = memberNames.map((name, i) => ({
 const defaultHistory = {
   "Nov": {
     winner: "Midhun",
-    // Ensuring Shigith and Midhun (and all members) are marked paid for the completed Nov cycle snapshot
     membersSnapshot: memberNames.map(n => ({ name: n, paid: true, amount: "SAR 1,000" }))
   },
   "Dec": null,
@@ -402,32 +419,40 @@ const defaultHistory = {
   "Feb": null
 };
 
-let storedMembers = JSON.parse(localStorage.getItem('chitty_members'));
-let members = defaultMembers.map(defM => {
-  if (storedMembers) {
-    let found = storedMembers.find(sm => sm.name === defM.name);
-    if (found) return found;
-  }
-  return defM;
-});
-
-members.forEach((m, idx) => { m.id = idx + 1; });
-
-let monthlyHistory = JSON.parse(localStorage.getItem('chitty_history')) || defaultHistory;
-
-// Force historical November snapshot to have everyone (specifically Shigith and Midhun) paid as requested
-if (monthlyHistory["Nov"] && monthlyHistory["Nov"].membersSnapshot) {
-  monthlyHistory["Nov"].membersSnapshot.forEach(sm => { sm.paid = true; });
-}
+let members = JSON.parse(JSON.stringify(defaultMembers));
+let monthlyHistory = JSON.parse(JSON.stringify(defaultHistory));
 
 let pendingWinner = null;
 let pendingAssignMemberId = null;
 let popupInterval = null;
 let nameRollerInterval = null;
 
+// Real-time synchronization listener with Firebase Database
+db.ref('chitty_portal_state').on('value', (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    if (data.members) members = data.members;
+    if (data.history) monthlyHistory = data.history;
+    
+    // Ensure historical Nov snapshot members are marked paid
+    if (monthlyHistory["Nov"] && monthlyHistory["Nov"].membersSnapshot) {
+      monthlyHistory["Nov"].membersSnapshot.forEach(sm => { sm.paid = true; });
+    }
+  } else {
+    saveStateToStorage();
+  }
+  render();
+});
+
+function saveStateToStorage() {
+  db.ref('chitty_portal_state').set({
+    members: members,
+    history: monthlyHistory
+  });
+}
+
 // HTML Modification Protection Logic using MutationObserver
 let isHtmlUnlocked = false;
-
 const observerConfig = { childList: true, subtree: true, characterData: true, attributes: true };
 const observer = new MutationObserver((mutations) => {
   if (isHtmlUnlocked) return;
@@ -466,11 +491,6 @@ function getNextOpenCycleIndex() {
     }
   }
   return cycleCodes.length - 1;
-}
-
-function saveStateToStorage() {
-  localStorage.setItem('chitty_members', JSON.stringify(members));
-  localStorage.setItem('chitty_history', JSON.stringify(monthlyHistory));
 }
 
 function resetContributionsForNewCycle() {
@@ -515,7 +535,6 @@ function handleGateLogin() {
 
     document.getElementById('loginGateOverlay').style.display = 'none';
     document.getElementById('appContainer').style.display = 'block';
-    errEl.style.display = 'none';
     render();
   } else {
     errEl.style.display = 'block';
@@ -760,7 +779,6 @@ function togglePaid(id) {
     });
 
     saveStateToStorage();
-    render();
   }
 }
 
@@ -774,7 +792,6 @@ function togglePaymentLock(id) {
     }
     m.paymentLocked = !m.paymentLocked;
     saveStateToStorage();
-    render();
   }
 }
 
@@ -784,7 +801,6 @@ function toggleWinnerLock(id) {
   if (m && !m.protected) {
     m.winnerLocked = !m.winnerLocked;
     saveStateToStorage();
-    render();
   }
 }
 
@@ -808,7 +824,6 @@ function markAllPaid() {
   });
 
   saveStateToStorage();
-  render();
 }
 
 function openAssignMonthModal(memberId) {
@@ -837,7 +852,6 @@ function confirmAssignMonth() {
     resetContributionsForNewCycle();
 
     saveStateToStorage();
-    render();
     closeModal('assignMonthModal');
     pendingAssignMemberId = null;
     alert(`${m.name} assigned as winner for ${selectedCode}! Contributions synchronized and reset to Unpaid.`);
@@ -860,7 +874,6 @@ function removeWinnerStatus(memberId) {
       }
     });
     saveStateToStorage();
-    render();
   }
 }
 
@@ -884,7 +897,6 @@ function removeCycleWinnerHistory(code) {
       m.winner = false;
     }
     saveStateToStorage();
-    render();
   }
 }
 
@@ -963,15 +975,13 @@ function confirmPopupWinner() {
   };
 
   pendingWinner.winner = true;
-
   resetContributionsForNewCycle();
 
   saveStateToStorage();
   closeModal('drawPopupModal');
   switchTab(activeCode);
-  render();
   pendingWinner = null;
-  alert(`Winner confirmed for ${activeCode}! Contributions synchronized to history and active records reset to Unpaid.`);
+  alert(`Winner confirmed for ${activeCode}! Real-time database updated instantly for all members.`);
 }
 
 function switchTab(monthCode) {
