@@ -205,7 +205,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
           <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;"><span style="color:#718096">Total Pool Amount</span><b>SAR 14,000</b></div>
         </section>
 
-        <!-- Live Countdown Timer on Dashboard -->
+        <!-- Live Countdown Timer on Dashboard (Synced with Monthly Draw Countdown) -->
         <section class="panel">
           <div class="panel-title"><div><h2>Next draw countdown</h2><div class="sub" id="countdownSubLabel">Time remaining for upcoming December winner draw (26 Nov 2026)</div></div></div>
           <div class="countdown-container" id="briefCountdownTimer">
@@ -362,21 +362,6 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
   </div>
 </div>
 
-<!-- Modification Verification Modal -->
-<div class="modal" id="integrityModal">
-  <div class="modal-card animate-pop">
-    <div class="eyebrow">HTML MODIFICATION PROTECTION</div>
-    <h2>Source Modification Restricted</h2>
-    <p>Modifying the source code of this protected file requires the security password (<code style="color:var(--blue);">P@ssw0rd</code>). Please enter the password to unlock edits:</p>
-    <input type="password" id="integrityPasswordInput" class="form-input" placeholder="Enter password (P@ssw0rd)" style="margin:15px 0;">
-    <div class="login-error" id="integrityError" style="display:none; margin-bottom:10px;">Incorrect password. Modification blocked.</div>
-    <div class="modal-actions">
-      <button class="btn-dash btn-primary" onclick="verifyIntegrityPassword()">Verify & Unlock</button>
-      <button class="btn-dash" style="background:#eef1f6" onclick="closeModal('integrityModal')">Cancel / Revert</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ================= FIREBASE REALTIME DATABASE CONFIGURATION =================
 const firebaseConfig = {
@@ -525,30 +510,6 @@ function runClientDrawAnimation(targetWinnerName) {
       createConfettiShower();
     }
   }, 1000);
-}
-
-// HTML Modification Protection Logic using MutationObserver
-let isHtmlUnlocked = false;
-const observerConfig = { childList: true, subtree: true, characterData: true, attributes: true };
-const observer = new MutationObserver((mutations) => {
-  if (isHtmlUnlocked) return;
-  observer.disconnect();
-  document.getElementById('integrityPasswordInput').value = '';
-  document.getElementById('integrityError').style.display = 'none';
-  document.getElementById('integrityModal').classList.add('show');
-});
-
-observer.observe(document.documentElement, observerConfig);
-
-function verifyIntegrityPassword() {
-  const pass = document.getElementById('integrityPasswordInput').value;
-  if (pass === 'P@ssw0rd') {
-    isHtmlUnlocked = true;
-    closeModal('integrityModal');
-    alert("Source modification unlocked successfully with password.");
-  } else {
-    document.getElementById('integrityError').style.display = 'block';
-  }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -1046,35 +1007,33 @@ function updateCountdown() {
   const now = new Date().getTime();
   const diff = drawDate - now;
 
+  let days = '00', hours = '00', mins = '00', secs = '00';
   if (diff > 0) {
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-    const cdDays = document.getElementById('cdDays');
-    const cdHours = document.getElementById('cdHours');
-    const cdMins = document.getElementById('cdMins');
-    const cdSecs = document.getElementById('cdSecs');
-    if (cdDays) cdDays.textContent = String(days).padStart(2, '0');
-    if (cdHours) cdHours.textContent = String(hours).padStart(2, '0');
-    if (cdMins) cdMins.textContent = String(mins).padStart(2, '0');
-    if (cdSecs) cdSecs.textContent = String(secs).padStart(2, '0');
-
-    const briefCdDays = document.getElementById('briefCdDays');
-    const briefCdHours = document.getElementById('briefCdHours');
-    const briefCdMins = document.getElementById('briefCdMins');
-    const briefCdSecs = document.getElementById('briefCdSecs');
-    if (briefCdDays) briefCdDays.textContent = String(days).padStart(2, '0');
-    if (briefCdHours) briefCdHours.textContent = String(hours).padStart(2, '0');
-    if (briefCdMins) briefCdMins.textContent = String(mins).padStart(2, '0');
-    if (briefCdSecs) briefCdSecs.textContent = String(secs).padStart(2, '0');
-  } else {
-    ['cdDays', 'cdHours', 'cdMins', 'cdSecs', 'briefCdDays', 'briefCdHours', 'briefCdMins', 'briefCdSecs'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = '00';
-    });
+    days = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+    hours = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+    mins = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+    secs = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
   }
+
+  // Update Monthly Lucky Draw tab countdown elements
+  const cdDays = document.getElementById('cdDays');
+  const cdHours = document.getElementById('cdHours');
+  const cdMins = document.getElementById('cdMins');
+  const cdSecs = document.getElementById('cdSecs');
+  if (cdDays) cdDays.textContent = days;
+  if (cdHours) cdHours.textContent = hours;
+  if (cdMins) cdMins.textContent = mins;
+  if (cdSecs) cdSecs.textContent = secs;
+
+  // Sync and update Dashboard next draw countdown elements
+  const briefCdDays = document.getElementById('briefCdDays');
+  const briefCdHours = document.getElementById('briefCdHours');
+  const briefCdMins = document.getElementById('briefCdMins');
+  const briefCdSecs = document.getElementById('briefCdSecs');
+  if (briefCdDays) briefCdDays.textContent = days;
+  if (briefCdHours) briefCdHours.textContent = hours;
+  if (briefCdMins) briefCdMins.textContent = mins;
+  if (briefCdSecs) briefCdSecs.textContent = secs;
 }
 
 setInterval(updateCountdown, 1000);
