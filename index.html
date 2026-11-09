@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Chitty | Portal</title>
+<style>
+:root{--navy:#14243a;--blue:#315efb;--teal:#12a889;--bg:#f4f7fb;--muted:#718096;--line:#e7edf5;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--navy)}
+
+/* Login Gate Overlay */
+.login-gate-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.login-gate-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+  text-align: center;
+}
+.login-gate-card h1 {
+  font-size: 24px;
+  margin: 0 0 8px;
+  color: var(--navy);
+}
+.login-gate-card p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 8px 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--blue);
+}
+.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:750;cursor:pointer;font-size:14px;width:100%}
+.btn-primary{background:var(--blue);color:white}
+.btn-primary:hover{background:#234ce0}
+.btn-danger{background:#ef4444;color:white}
+.btn-danger:hover{background:#dc2626}
+.login-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 10px;
+  display: none;
+}
+
+/* App Main Layout */
+.app-container { display: none; }
+.app{display:flex;min-height:100vh}.sidebar{width:245px;background:var(--navy);color:#dce6f5;padding:28px 18px;display:flex;flex-direction:column}
+.brand{font-size:20px;font-weight:800;color:#fff;padding:4px 12px 32px;letter-spacing:.2px}.brand span{display:block;font-size:11px;font-weight:500;color:#9fb0c7;margin-top:5px;letter-spacing:1.6px;text-transform:uppercase}
+.nav-label{font-size:10px;color:#8294ad;font-weight:700;letter-spacing:1.5px;padding:0 12px 10px}.nav a{display:flex;gap:12px;align-items:center;text-decoration:none;color:#b9c7da;padding:12px;border-radius:10px;margin:3px 0;font-size:14px;cursor:pointer}.nav a.active,.nav a:hover{background:#263b58;color:#fff}.nav .ico{width:20px;text-align:center;font-size:16px}.side-bottom{margin-top:auto;background:#203650;border-radius:13px;padding:15px;font-size:12px;color:#c4d1e2;line-height:1.6}.side-bottom b{color:#fff}
+main{flex:1;min-width:0;padding:30px 38px 45px;max-width:1500px;margin:auto;width:100%}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:15px}.eyebrow{font-size:11px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;font-weight:700}.topbar h1{font-size:26px;margin:6px 0 0}.profile{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);padding:8px 13px;border-radius:30px;font-size:13px;font-weight:650;cursor:pointer}.avatar{width:31px;height:31px;border-radius:50%;background:#e9efff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px rgba(26,45,75,.035)}.stat{padding:19px 20px}.stat-head{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;font-weight:650}.stat-icon{width:34px;height:34px;border-radius:10px;background:#eef2ff;color:var(--blue);display:grid;place-items:center;font-size:17px}.stat strong{display:block;font-size:25px;margin:14px 0 4px;letter-spacing:-.7px}.stat small{color:var(--muted);font-size:11px}
+
+/* Tab Views Container */
+.view-section { display: none; }
+.view-section.active-view { display: block; }
+
+.grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.85fr);gap:18px;align-items:start}.panel{padding:22px;margin-bottom:18px}.panel-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.panel-title h2{font-size:16px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:5px}.pill{font-size:11px;padding:6px 10px;border-radius:20px;background:#e9f8f3;color:#118568;font-weight:700}
+.progress-row{display:flex;justify-content:space-between;font-size:12px;margin:18px 0 9px}.progress{height:8px;background:#edf1f6;border-radius:20px;overflow:hidden}.progress>span{display:block;width:8%;height:100%;background:linear-gradient(90deg,var(--blue),#6c8bff);border-radius:20px}
+.draw-box{background:linear-gradient(140deg,#182c49,#263f66);color:white;border-radius:14px;padding:20px;position:relative;overflow:hidden}.draw-box:after{content:"";position:absolute;width:170px;height:170px;border:1px solid #ffffff18;border-radius:50%;right:-55px;top:-70px;box-shadow:0 0 0 22px #ffffff08,0 0 0 45px #ffffff06}.draw-kicker{font-size:10px;letter-spacing:1.5px;color:#b9c9e1;text-transform:uppercase}.draw-box h3{font-size:20px;margin:9px 0 5px}.draw-box p{font-size:12px;color:#c1cee0;margin:0 0 18px}.draw-meta{display:flex;gap:22px;margin-bottom:18px}.draw-meta div{font-size:11px;color:#b9c9e1}.draw-meta b{display:block;color:white;font-size:16px;margin-top:4px}
+.countdown-container{display:flex;gap:12px;margin-bottom:18px}.cd-box{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:8px;text-align:center;min-width:50px}.cd-box b{display:block;font-size:16px;color:#fff}.cd-box span{font-size:9px;color:#b9c9e1;text-transform:uppercase}
+.btn-dash{border:0;border-radius:9px;padding:11px 15px;font-weight:750;cursor:pointer;font-size:12px}.btn-primary{background:var(--blue);color:white}.btn-primary:hover{background:#234ce0}.btn-danger{background:#ef4444;color:white}.btn-danger:hover{background:#dc2626}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#8a97a9;padding:0 8px 12px}td{padding:12px 8px;border-top:1px solid #eef1f5;font-size:12px}td:first-child{font-weight:700}.member{display:flex;align-items:center;gap:9px}.mini{width:29px;height:29px;border-radius:50%;background:#edf2ff;color:#315efb;display:grid;place-items:center;font-size:10px;font-weight:800}.status{padding:5px 8px;border-radius:20px;font-size:10px;font-weight:700}.paid{background:#e9f8f1;color:#128365}.pending{background:#fff5df;color:#a66a00}.winner{background:#f0ebff;color:#7044bf}.history-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #eef1f5}.medal{width:34px;height:34px;background:#fff5df;border-radius:10px;display:grid;place-items:center}.history-item b{font-size:12px}.history-item small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.amount{margin-left:auto;font-weight:750;font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}.note{font-size:11px;color:var(--muted);line-height:1.55;margin-top:13px}
+.modal{display:none;position:fixed;inset:0;background:#101d32a8;z-index:5;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modal-card{background:#fff;border-radius:18px;padding:30px;max-width:410px;width:100%;text-align:center;box-shadow:0 20px 70px #0003;position:relative;overflow:hidden}.confetti{font-size:32px}.modal-card h2{margin:8px 0}.winner-name{font-size:25px;font-weight:850;color:var(--blue);margin:15px 0}.modal-card p{font-size:12px;color:var(--muted);line-height:1.5}.modal-actions{display:flex;justify-content:center;gap:10px;margin-top:20px}
+
+/* Tabs for History Months */
+.tabs-header{display:flex;gap:8px;margin-bottom:15px;border-bottom:1px solid var(--line);padding-bottom:10px;overflow-x:auto}
+.tab-btn{background:#eef1f6;border:0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}
+.tab-btn.active{background:var(--blue);color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Celebration & Popup Countdown Animation Styles */
+@keyframes popScale {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop { animation: popScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+.popup-countdown-display {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--blue);
+  margin: 20px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.popup-roller {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  background: #f4f7fb;
+  padding: 14px;
+  border-radius: 12px;
+  margin: 15px 0;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--line);
+}
+
+@keyframes bounceWinner {
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+  40% {transform: translateY(-10px);}
+  60% {transform: translateY(-5px);}
+}
+.celebrating {
+  animation: bounceWinner 1s infinite;
+}
+
+.confetti-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #315efb;
+  top: -10px;
+  opacity: 0.9;
+  animation: fall 2s linear infinite;
+}
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(350px) rotate(720deg); opacity: 0; }
+}
+
+@media(max-width:1050px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:700px){.sidebar{width:62px;padding:20px 8px}.brand{font-size:0;padding:4px 8px 28px}.brand:before{content:"OC";font-size:18px}.brand span,.nav-label,.nav a:not(.active){display:none}.nav a{justify-content:center;padding:12px 5px}.nav a .label{display:none}.side-bottom{display:none}main{padding:22px 14px}.topbar h1{font-size:21px}.profile .name{display:none}.cards{gap:9px}.stat{padding:14px}.stat strong{font-size:21px}.panel{padding:16px}table{min-width:480px}.table-wrap{overflow-x:auto}}
+</style>
+</head>
+<body>
+
+<!-- Login Gate Overlay -->
+<div class="login-gate-overlay" id="loginGateOverlay">
+  <div class="login-gate-card animate-pop">
+    <h1>Our Chitty Portal</h1>
+    <p>Please log in to access the group management dashboard.</p>
+    <form onsubmit="event.preventDefault(); handleGateLogin();">
+      <input type="text" id="gateUser" class="form-input" placeholder="Username" required autocomplete="username">
+      <input type="password" id="gatePass" class="form-input" placeholder="Password" autocomplete="current-password">
+      <button type="submit" class="btn btn-primary">Login to Dashboard</button>
+    </form>
+    <div class="login-error" id="gateError">Please enter a valid username.</div>
+  </div>
+</div>
+
+<!-- Main Application Content -->
+<div class="app-container" id="appContainer">
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">Our Chitty<span>Group management</span></div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav class="nav">
+    <a class="active" id="nav-dash" onclick="switchView('dash')"><span class="ico">▦</span><span class="label">Dashboard</span></a>
+    <a id="nav-members" onclick="switchView('members')"><span class="ico">♙</span><span class="label">Members</span></a>
+    <a id="nav-draw" onclick="switchView('draw')"><span class="ico">✦</span><span class="label">Monthly Draw</span></a>
+    <a id="nav-payments" onclick="switchView('payments')"><span class="ico">₹</span><span class="label">Contributions</span></a>
+    <a id="nav-history" onclick="switchView('history')"><span class="ico">◷</span><span class="label">Draw History</span></a>
+  </nav>
+  <div class="side-bottom"><b>Private group workspace</b><br>Synchronized & Secured</div>
+</aside>
+<main>
+  <header class="topbar">
+    <div><div class="eyebrow">CHITTY GROUP · MEMBER & DRAW OVERVIEW</div><h1 id="pageTitle">Dashboard Overview</h1></div>
+    <div class="profile" onclick="handleLogout()"><div class="avatar" id="adminAvatar">US</div><span class="name" id="adminLabel">Normal User</span><span style="font-size:10px;color:var(--muted);margin-left:4px;">(Logout)</span></div>
+  </header>
+
+  <section class="cards">
+    <div class="card stat"><div class="stat-head">Total Members <span class="stat-icon">♙</span></div><strong id="totalMembersCount">14</strong><small>Registered group members</small></div>
+    <div class="card stat"><div class="stat-head">Monthly Collection <span class="stat-icon">₹</span></div><strong id="collection">SAR 14,000</strong><small>14 members × SAR 1,000</small></div>
+    <div class="card stat"><div class="stat-head">Chitty Turn <span class="stat-icon">▣</span></div><strong id="activeCycleLabel">December</strong><small>Active draw cycle</small></div>
+    <div class="card stat"><div class="stat-head">Draw Eligible <span class="stat-icon">✦</span></div><strong id="eligibleCount">13</strong><small>Members not yet selected</small></div>
+  </section>
+
+  <!-- ================= VIEW 1: DASHBOARD OVERVIEW ================= -->
+  <div class="view-section active-view" id="view-dash">
+    <div class="grid">
+      <div>
+        <section class="panel">
+          <div class="panel-title"><div><h2>Chitty brief summary</h2><div class="sub">Current active cycle quick status</div></div><span class="pill" id="dashCyclePill">December Cycle</span></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:#718096">Next Open Draw Month</span><b id="briefCycleName">December 2026</b></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:#718096">Next Draw Date</span><b id="briefDrawDate">26 Nov 2026</b></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;"><span style="color:#718096">Total Pool Amount</span><b>SAR 14,000</b></div>
+        </section>
+
+        <!-- Live Countdown Timer on Dashboard -->
+        <section class="panel">
+          <div class="panel-title"><div><h2>Next draw countdown</h2><div class="sub" id="countdownSubLabel">Time remaining for upcoming December winner draw (26 Nov 2026)</div></div></div>
+          <div class="countdown-container" id="briefCountdownTimer">
+            <div class="cd-box"><b id="briefCdDays">00</b><span>Days</span></div>
+            <div class="cd-box"><b id="briefCdHours">00</b><span>Hours</span></div>
+            <div class="cd-box"><b id="briefCdMins">00</b><span>Mins</span></div>
+            <div class="cd-box"><b id="briefCdSecs">00</b><span>Secs</span></div>
+          </div>
+          <div class="note">Switch to the <b>Monthly Draw</b> tab for detailed management controls.</div>
+        </section>
+
+        <!-- Dynamic Winner History List inside Dashboard -->
+        <section class="panel">
+          <div class="panel-title"><div><h2>Winner History Log</h2><div class="sub">All winning members by assigned month</div></div></div>
+          <div id="dashWinnerListLog"></div>
+        </section>
+      </div>
+
+      <div>
+        <section class="panel">
+          <div class="panel-title"><div><h2>Recent highlights</h2><div class="sub">Latest group activities</div></div></div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6">
+            <p id="dashPrizedSummary"><b>November Prized Person:</b> Midhun (SAR 14,000 awarded on Oct 26).</p>
+            <p id="dashProgressSummary"><b>Cycle Progress:</b> 1 of 14 turns completed.</p>
+            <p><b>Rules:</b> True random selection with repeat winner prevention strictly enforced.</p>
+          </div>
+        </section>
+
+        <!-- Draw Control Panel for Superadmin & Admin directly in Dashboard -->
+        <section class="panel" id="dashDevDrawPanel" style="display:none; background:linear-gradient(140deg,#182c49,#263f66); color:white;">
+          <div class="panel-title"><h2 style="color:white;" id="devControlTitle">Draw Control</h2><span class="pill" style="background:#315efb;color:#fff;" id="devControlPill">Test Mode</span></div>
+          <p style="font-size:12px;color:#c1cee0;margin-bottom:15px;" id="devControlDesc">Trigger test draws directly from the dashboard.</p>
+          <button class="btn-dash btn-light" onclick="startDrawPopup()">✦ &nbsp; START TEST DRAW NOW</button>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= VIEW 2: MEMBERS DIRECTORY ================= -->
+  <div class="view-section" id="view-members">
+    <section class="panel">
+      <div class="panel-title"><div><h2>Member directory & contributions</h2><div class="sub">14 registered group members · SAR 1,000 contribution each</div></div><span class="sub" id="adminControlHint">Mode: View Only</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Member</th><th>Member ID</th><th>Contribution Status</th><th>Eligibility Status</th><th id="actionsHeaderLabel">Management Actions</th></tr></thead>
+          <tbody id="memberRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= VIEW 3: MONTHLY DRAW & START DRAW BUTTON ================= -->
+  <div class="view-section" id="view-draw">
+    <section class="panel">
+      <div class="panel-title"><div><h2>Monthly lucky draw</h2><div class="sub">Cryptographically secure random draw (No repeats allowed)</div></div><span class="pill">Next Draw</span></div>
+      <div class="draw-box">
+        <div class="draw-kicker">Random Selection · SAR 14,000</div>
+        <h3 id="drawHeadingText">Who's taking home the pool?</h3>
+        <p id="drawDescText">The next random draw is being prepared.</p>
+        <div class="countdown-container" id="countdownTimer">
+          <div class="cd-box"><b id="cdDays">00</b><span>Days</span></div>
+          <div class="cd-box"><b id="cdHours">00</b><span>Hours</span></div>
+          <div class="cd-box"><b id="cdMins">00</b><span>Mins</span></div>
+          <div class="cd-box"><b id="cdSecs">00</b><span>Secs</span></div>
+        </div>
+        <div class="draw-meta"><div>TOTAL CHITTY<b>SAR 14,000</b></div><div>ELIGIBLE MEMBERS<b id="drawEligible">13</b></div></div>
+        
+        <button class="btn-dash btn-light" id="drawBtn" onclick="startDrawPopup()" style="display:none; margin-top:15px;">✦ &nbsp; START RANDOM DRAW</button>
+      </div>
+      <div class="note" id="drawControlNote">Note: Draw trigger is available for Superadmin and Admin users.</div>
+    </section>
+  </div>
+
+  <!-- ================= VIEW 4: CONTRIBUTIONS & COLLECTION STATUS ================= -->
+  <div class="view-section" id="view-payments">
+    <section class="panel">
+      <div class="panel-title"><div><h2>Collection status</h2><div class="sub">Current cycle contribution tracking & payment locks</div></div><span class="pill" id="paidCount">0 / 14 paid</span></div>
+      <div class="progress-row"><span>Payments received</span><b id="paidPercent">0%</b></div>
+      <div class="progress"><span id="paymentBar" style="width:0%;background:linear-gradient(90deg,#0da985,#54c9a9)"></span></div>
+      <div class="actions" style="margin-top:17px" id="paymentToggleAction">
+        <button class="btn-dash btn-primary" id="markAllPaidBtn" onclick="markAllPaid()" style="display:none;">Mark all unlocked as Paid</button>
+      </div>
+      <div class="note" id="paymentRoleNote">Normal users have view-only access. Login as Superadmin to manage contributions and locks. Admin has view and draw access only.</div>
+    </section>
+  </div>
+
+  <!-- ================= VIEW 5: DRAW & CONTRIBUTION HISTORY ================= -->
+  <div class="view-section" id="view-history">
+    <section class="panel">
+      <div class="panel-title"><div><h2>Draw & contribution history archive</h2><div class="sub">Archived month-by-month results & individual payment records</div></div></div>
+      
+      <div class="tabs-header" id="historyTabs">
+        <button class="tab-btn active" onclick="switchTab('Nov')">November</button>
+        <button class="tab-btn" onclick="switchTab('Dec')">December</button>
+        <button class="tab-btn" onclick="switchTab('Jan')">January</button>
+        <button class="tab-btn" onclick="switchTab('Feb')">February</button>
+      </div>
+
+      <div class="tab-content active" id="tab-Nov"></div>
+      <div class="tab-content" id="tab-Dec"></div>
+      <div class="tab-content" id="tab-Jan"></div>
+      <div class="tab-content" id="tab-Feb"></div>
+    </section>
+  </div>
+
+</main>
+</div>
+</div>
+
+<!-- Modal for Assigning Winner to Specific Month -->
+<div class="modal" id="assignMonthModal">
+  <div class="modal-card animate-pop">
+    <div class="eyebrow" id="assignModalEyebrow">SUPERADMIN MANUAL ASSIGNMENT</div>
+    <h2>Select Winning Month</h2>
+    <p>Assign <b id="assignMemberName" style="color:var(--blue)">Member</b> as the prized winner for a specific month cycle:</p>
+    <select id="assignMonthSelect" class="form-input" style="margin:20px 0;">
+      <option value="Nov">November 2026</option>
+      <option value="Dec">December 2026</option>
+      <option value="Jan">January 2027</option>
+      <option value="Feb">February 2027</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn-dash btn-primary" onclick="confirmAssignMonth()">Assign & Save</button>
+      <button class="btn-dash" style="background:#eef1f6" onclick="closeModal('assignMonthModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Draw Popup Modal with 10s Countdown -->
+<div class="modal" id="drawPopupModal">
+  <div class="modal-card animate-pop" id="drawModalCard">
+    <div id="drawPopupContent">
+      <div class="eyebrow">RANDOM LUCKY DRAW</div>
+      <h2>Selecting Winner</h2>
+      <p>Cryptographically shuffling eligible members without repeat options...</p>
+      <div class="popup-countdown-display" id="popupTimerNum">10</div>
+      <div class="popup-roller" id="popupRollerText">Preparing shuffle...</div>
+    </div>
+    <div id="drawWinnerContent" style="display:none;">
+      <div class="confetti" id="confettiBox">🎉 🏆 🎉</div>
+      <div class="eyebrow">RANDOM WINNER ESTABLISHED</div>
+      <h2 style="margin-top:5px;">We have a winner!</h2>
+      <div class="winner-name celebrating" id="popupWinnerName">Member</div>
+      <p>Selected entirely at random with zero repeat bias. Pool: SAR 14,000</p>
+      <div class="modal-actions">
+        <button class="btn-dash btn-primary" onclick="confirmPopupWinner()">Confirm & Save to History</button>
+        <button class="btn-dash" style="background:#eef1f6" onclick="closeModal('drawPopupModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modification Verification Modal -->
+<div class="modal" id="integrityModal">
+  <div class="modal-card animate-pop">
+    <div class="eyebrow">HTML MODIFICATION PROTECTION</div>
+    <h2>Source Modification Restricted</h2>
+    <p>Modifying the source code of this protected file requires the security password (<code style="color:var(--blue);">P@ssw0rd</code>). Please enter the password to unlock edits:</p>
+    <input type="password" id="integrityPasswordInput" class="form-input" placeholder="Enter password (P@ssw0rd)" style="margin:15px 0;">
+    <div class="login-error" id="integrityError" style="display:none; margin-bottom:10px;">Incorrect password. Modification blocked.</div>
+    <div class="modal-actions">
+      <button class="btn-dash btn-primary" onclick="verifyIntegrityPassword()">Verify & Unlock</button>
+      <button class="btn-dash" style="background:#eef1f6" onclick="closeModal('integrityModal')">Cancel / Revert</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let userRole = localStorage.getItem('chitty_role') || 'normal'; 
+const cycleNames = ["November", "December", "January", "February"];
+const cycleCodes = ["Nov", "Dec", "Jan", "Feb"];
+const cycleDates = ["26 Oct 2026", "26 Nov 2026", "26 Dec 2026", "26 Jan 2027"];
+
+const memberNames = [
+  "Aby", "Azher", "Boby", "Darrel", "Midhun", "Nabeel", "Sanu", 
+  "Sibin", "Sijo", "Shigith", "Suresh", "Thomas", "Vinayak", "Vijay"
+];
+
+const defaultMembers = memberNames.map((name, i) => ({
+  id: i + 1,
+  name,
+  paid: false,                
+  winner: name === "Midhun", 
+  protected: name === "Midhun",
+  winnerLocked: name === "Midhun",
+  paymentLocked: false        
+}));
+
+const defaultHistory = {
+  "Nov": {
+    winner: "Midhun",
+    // Ensuring Shigith and Midhun (and all members) are marked paid for the completed Nov cycle snapshot
+    membersSnapshot: memberNames.map(n => ({ name: n, paid: true, amount: "SAR 1,000" }))
+  },
+  "Dec": null,
+  "Jan": null,
+  "Feb": null
+};
+
+let storedMembers = JSON.parse(localStorage.getItem('chitty_members'));
+let members = defaultMembers.map(defM => {
+  if (storedMembers) {
+    let found = storedMembers.find(sm => sm.name === defM.name);
+    if (found) return found;
+  }
+  return defM;
+});
+
+members.forEach((m, idx) => { m.id = idx + 1; });
+
+let monthlyHistory = JSON.parse(localStorage.getItem('chitty_history')) || defaultHistory;
+
+// Force historical November snapshot to have everyone (specifically Shigith and Midhun) paid as requested
+if (monthlyHistory["Nov"] && monthlyHistory["Nov"].membersSnapshot) {
+  monthlyHistory["Nov"].membersSnapshot.forEach(sm => { sm.paid = true; });
+}
+
+let pendingWinner = null;
+let pendingAssignMemberId = null;
+let popupInterval = null;
+let nameRollerInterval = null;
+
+// HTML Modification Protection Logic using MutationObserver
+let isHtmlUnlocked = false;
+
+const observerConfig = { childList: true, subtree: true, characterData: true, attributes: true };
+const observer = new MutationObserver((mutations) => {
+  if (isHtmlUnlocked) return;
+  observer.disconnect();
+  document.getElementById('integrityPasswordInput').value = '';
+  document.getElementById('integrityError').style.display = 'none';
+  document.getElementById('integrityModal').classList.add('show');
+});
+
+observer.observe(document.documentElement, observerConfig);
+
+function verifyIntegrityPassword() {
+  const pass = document.getElementById('integrityPasswordInput').value;
+  if (pass === 'P@ssw0rd') {
+    isHtmlUnlocked = true;
+    closeModal('integrityModal');
+    alert("Source modification unlocked successfully with password.");
+  } else {
+    document.getElementById('integrityError').style.display = 'block';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const isLoggedIn = localStorage.getItem('chitty_logged_in') === 'true';
+  if (isLoggedIn) {
+    document.getElementById('loginGateOverlay').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    render();
+  }
+});
+
+function getNextOpenCycleIndex() {
+  for (let i = 0; i < cycleCodes.length; i++) {
+    if (!monthlyHistory[cycleCodes[i]] || !monthlyHistory[cycleCodes[i]].winner) {
+      return i;
+    }
+  }
+  return cycleCodes.length - 1;
+}
+
+function saveStateToStorage() {
+  localStorage.setItem('chitty_members', JSON.stringify(members));
+  localStorage.setItem('chitty_history', JSON.stringify(monthlyHistory));
+}
+
+function resetContributionsForNewCycle() {
+  members.forEach(m => {
+    m.paid = false;
+    m.paymentLocked = false; 
+  });
+}
+
+function switchView(viewId) {
+  document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
+  document.querySelectorAll('.nav a').forEach(el => el.classList.remove('active'));
+
+  document.getElementById(`view-${viewId}`).classList.add('active-view');
+  document.getElementById(`nav-${viewId}`).classList.add('active');
+
+  const titles = {
+    'dash': 'Dashboard Overview',
+    'members': 'Member Directory',
+    'draw': 'Monthly Lucky Draw',
+    'payments': 'Contributions Tracking',
+    'history': 'Draw & Contribution History'
+  };
+  document.getElementById('pageTitle').textContent = titles[viewId] || 'Dashboard';
+}
+
+function handleGateLogin() {
+  const u = document.getElementById('gateUser').value.trim().toLowerCase();
+  const errEl = document.getElementById('gateError');
+
+  if (u !== '') {
+    if (u === 'superadmin') {
+      userRole = 'superadmin';
+    } else if (u === 'admin') {
+      userRole = 'admin';
+    } else {
+      userRole = 'normal'; 
+    }
+
+    localStorage.setItem('chitty_logged_in', 'true');
+    localStorage.setItem('chitty_role', userRole);
+
+    document.getElementById('loginGateOverlay').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    errEl.style.display = 'none';
+    render();
+  } else {
+    errEl.style.display = 'block';
+  }
+}
+
+function handleLogout() {
+  if (confirm("Are you sure you want to log out?")) {
+    localStorage.removeItem('chitty_logged_in');
+    localStorage.removeItem('chitty_role');
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('loginGateOverlay').style.display = 'flex';
+    document.getElementById('gateUser').value = '';
+    document.getElementById('gatePass').value = '';
+    document.getElementById('gateError').style.display = 'none';
+    userRole = 'normal';
+  }
+}
+
+function render() {
+  const isSuperadmin = (userRole === 'superadmin');
+  const isAdmin = (userRole === 'admin');
+  const activeCycleIndex = getNextOpenCycleIndex();
+  const totalCount = members.length;
+
+  document.getElementById('memberRows').innerHTML = members.map(m => {
+    let paymentControlHtml = '';
+    if (isSuperadmin) {
+      if (m.paymentLocked) {
+        paymentControlHtml = `<button class="btn-dash" style="padding:4px 8px;font-size:10px;background:#e9f8f1;color:#128365" onclick="togglePaid(${m.id})">Paid 🔒</button>`;
+      } else {
+        paymentControlHtml = `<button class="btn-dash" style="padding:4px 8px;font-size:10px;background:${m.paid?'#e9f8f1':'#fff5df'};color:${m.paid?'#128365':'#a66a00'}" onclick="togglePaid(${m.id})">${m.paid?'Paid':'Unpaid'}</button>`;
+      }
+    } else {
+      paymentControlHtml = `<span class="status ${m.paid?'paid':'pending'}">${m.paid?'Paid':'Unpaid'} ${m.paymentLocked ? '🔒' : ''}</span>`;
+    }
+
+    let paymentLockBtnHtml = '';
+    if (isSuperadmin) {
+      if (m.paymentLocked) {
+        paymentLockBtnHtml = `<button class="btn-dash" style="padding:4px 6px;font-size:9px;background:#cbd5e1;color:#14243a;" onclick="togglePaymentLock(${m.id})">Unlock Pay</button>`;
+      } else if (m.paid) {
+        paymentLockBtnHtml = `<button class="btn-dash" style="padding:4px 6px;font-size:9px;background:#0da985;color:#fff;" onclick="togglePaymentLock(${m.id})">Lock Pay</button>`;
+      }
+    }
+
+    let winnerActionHtml = '-';
+    if (isSuperadmin) {
+      if (m.protected) {
+        winnerActionHtml = `<span style="font-size:10px;color:var(--muted);font-weight:700;">Nov Winner (Locked)</span>`;
+      } else if (m.winner) {
+        winnerActionHtml = `
+          <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
+            <button class="btn-dash btn-danger" style="padding:4px 7px;font-size:10px;" onclick="removeWinnerStatus(${m.id})">Remove Winner</button>
+            <button class="btn-dash" style="padding:4px 7px;font-size:10px;background:${m.winnerLocked?'#cbd5e1':'#315efb'};color:${m.winnerLocked?'#14243a':'#fff'};" onclick="toggleWinnerLock(${m.id})">${m.winnerLocked?'Unlock Winner 🔒':'Lock Winner'}</button>
+          </div>
+        `;
+      } else {
+        winnerActionHtml = `<button class="btn-dash btn-primary" style="padding:4px 8px;font-size:10px;" onclick="openAssignMonthModal(${m.id})">Set Winner</button>`;
+      }
+    } else if (isAdmin) {
+      winnerActionHtml = `<span style="font-size:10px;color:var(--muted);">View Only</span>`;
+    }
+
+    return `
+      <tr>
+        <td><div class="member"><span class="mini">${String(m.id).padStart(2,'0')}</span>${m.name} ${m.winnerLocked ? '🏆🔒' : ''}</div></td>
+        <td>CH-${String(m.id).padStart(3,'0')}</td>
+        <td>
+          <div style="display:flex;gap:6px;align-items:center;">
+            ${paymentControlHtml}
+            ${paymentLockBtnHtml}
+          </div>
+        </td>
+        <td><span class="status ${m.winner?'winner':'paid'}">${m.winner ? 'Prized / Won' : 'Eligible'}</span></td>
+        <td>${winnerActionHtml}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const paidCount = members.filter(m => m.paid).length;
+  const eligibleCount = members.filter(m => !m.winner).length;
+  
+  document.getElementById('totalMembersCount').textContent = totalCount;
+  document.getElementById('eligibleCount').textContent = eligibleCount;
+  document.getElementById('drawEligible').textContent = eligibleCount;
+  document.getElementById('paidCount').textContent = `${paidCount} / ${totalCount} paid`;
+  document.getElementById('paidPercent').textContent = Math.round((paidCount / totalCount) * 100) + '%';
+  document.getElementById('paymentBar').style.width = (paidCount / totalCount * 100) + '%';
+  document.getElementById('collection').textContent = `SAR ${totalCount * 1000}`;
+
+  document.getElementById('activeCycleLabel').textContent = cycleNames[activeCycleIndex];
+  document.getElementById('briefCycleName').textContent = cycleNames[activeCycleIndex] + " 2026";
+  document.getElementById('briefDrawDate').textContent = cycleDates[activeCycleIndex];
+  document.getElementById('dashCyclePill').textContent = cycleNames[activeCycleIndex] + " Cycle";
+
+  const nextMonthName = cycleNames[activeCycleIndex];
+  document.getElementById('drawDescText').textContent = `Next open draw cycle: ${nextMonthName}. Scheduled for ${cycleDates[activeCycleIndex]}.`;
+
+  document.getElementById('dashPrizedSummary').innerHTML = `<b>November Prized Person:</b> Midhun (SAR 14,000 awarded on Oct 26).`;
+  document.getElementById('dashProgressSummary').innerHTML = `<b>Cycle Progress:</b> ${totalCount - eligibleCount} of ${totalCount} turns completed.`;
+
+  document.getElementById('countdownSubLabel').textContent = `Time remaining for upcoming ${nextMonthName} winner draw (${cycleDates[activeCycleIndex]})`;
+
+  renderDashboardWinnerLog();
+
+  const drawBtn = document.getElementById('drawBtn');
+  if (drawBtn) {
+    drawBtn.style.display = (isSuperadmin || isAdmin) ? 'inline-block' : 'none';
+    drawBtn.disabled = (eligibleCount === 0);
+  }
+  
+  const drawControlNote = document.getElementById('drawControlNote');
+  if (drawControlNote) {
+    drawControlNote.textContent = (isSuperadmin || isAdmin) ? "Draw control active: You can trigger monthly draws." : "Draw trigger controls are restricted.";
+  }
+
+  const dashDevDrawPanel = document.getElementById('dashDevDrawPanel');
+  if (dashDevDrawPanel) {
+    dashDevDrawPanel.style.display = (isSuperadmin || isAdmin) ? 'block' : 'none';
+  }
+
+  const adminControlHint = document.getElementById('adminControlHint');
+  if (adminControlHint) {
+    adminControlHint.textContent = isSuperadmin ? "Superadmin Mode: Active (Full management enabled)" : (isAdmin ? "Admin Mode: Active (Draw execution allowed, view-only contributions)" : "Mode: View Only (Normal User)");
+  }
+  
+  const adminLabel = document.getElementById('adminLabel');
+  if (adminLabel) {
+    adminLabel.textContent = isSuperadmin ? "Superadmin" : (isAdmin ? "Admin" : "Normal User");
+  }
+  
+  const adminAvatar = document.getElementById('adminAvatar');
+  if (adminAvatar) {
+    adminAvatar.style.background = isSuperadmin ? "#315efb" : (isAdmin ? "#12a889" : "#e9efff");
+    adminAvatar.style.color = isSuperadmin || isAdmin ? "#fff" : "#315efb";
+    adminAvatar.textContent = isSuperadmin ? "SA" : (isAdmin ? "AD" : "US");
+  }
+
+  const markAllPaidBtn = document.getElementById('markAllPaidBtn');
+  if (markAllPaidBtn) {
+    markAllPaidBtn.style.display = isSuperadmin ? 'inline-block' : 'none';
+  }
+
+  const actionsHeaderLabel = document.getElementById('actionsHeaderLabel');
+  if (actionsHeaderLabel) {
+    actionsHeaderLabel.textContent = isSuperadmin ? "Superadmin Actions" : "Management Actions";
+  }
+
+  renderHistoryTabsContent();
+  updateCountdown();
+}
+
+function renderDashboardWinnerLog() {
+  const container = document.getElementById('dashWinnerListLog');
+  if (!container) return;
+
+  let html = '';
+  cycleCodes.forEach(code => {
+    const data = monthlyHistory[code];
+    if (data && data.winner) {
+      const mem = members.find(m => m.name === data.winner);
+      const isWinnerLocked = mem && mem.winnerLocked;
+      const totalCount = members.length;
+      html += `
+        <div class="history-item">
+          <div class="medal">🏆</div>
+          <div>
+            <b>${data.winner} ${isWinnerLocked ? '🔒' : ''}</b>
+            <small>Prized Person · ${code} Cycle</small>
+          </div>
+          <div class="amount">SAR ${totalCount * 1000}</div>
+        </div>
+      `;
+    }
+  });
+
+  if (!html) {
+    html = `<div style="font-size:12px;color:var(--muted);padding:10px 0;">No winners assigned yet.</div>`;
+  }
+  container.innerHTML = html;
+}
+
+function renderHistoryTabsContent() {
+  const totalCount = members.length;
+  const isSuperadmin = (userRole === 'superadmin');
+
+  cycleCodes.forEach(code => {
+    const data = monthlyHistory[code];
+    const tabContainer = document.getElementById(`tab-${code}`);
+    if (!tabContainer) return;
+
+    if (!data) {
+      tabContainer.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:15px 0;text-align:center;">No draw conducted yet for ${code}. History will appear here once finalized.</div>`;
+    } else {
+      let isProtected = (code === 'Nov');
+      let mem = members.find(m => m.name === data.winner);
+      let isWinnerLocked = mem && mem.winnerLocked;
+      let html = `
+        <div style="background:#f8fafc;padding:12px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><b>Prized Person: ${data.winner} ${isWinnerLocked ? '🔒' : ''}</b><small style="display:block;color:var(--muted)">Pool Amount: SAR ${totalCount * 1000}</small></div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <span class="status winner">Completed</span>
+              ${isSuperadmin && !isProtected && !isWinnerLocked ? `<button class="btn-dash btn-danger" style="padding:4px 8px;font-size:10px" onclick="removeCycleWinnerHistory('${code}')">Remove Winner History</button>` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="sub" style="margin-bottom:8px;font-weight:700;">Individual Contributions Record (Synchronized Snapshot):</div>
+        <div style="max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;">
+          <table style="font-size:11px;">
+            <thead><tr><th>Member</th><th>Contribution</th><th>Status</th></tr></thead>
+            <tbody>
+      `;
+      data.membersSnapshot.forEach(m => {
+        let statusBadge = m.paid ? '<span class="status paid">Paid</span>' : '<span class="status pending">Unpaid</span>';
+        html += `<tr><td>${m.name}</td><td>${m.amount}</td><td>${statusBadge}</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+      tabContainer.innerHTML = html;
+    }
+  });
+}
+
+function togglePaid(id) {
+  if (userRole !== 'superadmin') return;
+  const m = members.find(x => x.id === id);
+  if (m) {
+    if (m.paymentLocked) {
+      alert(`${m.name}'s payment is locked. Unlock the payment first to modify contribution status.`);
+      return;
+    }
+    m.paid = !m.paid;
+    
+    cycleCodes.forEach(code => {
+      if (monthlyHistory[code] && !monthlyHistory[code].winnerLocked) {
+        let snapMem = monthlyHistory[code].membersSnapshot.find(sm => sm.name === m.name);
+        if (snapMem) {
+          snapMem.paid = m.paid;
+        }
+      }
+    });
+
+    saveStateToStorage();
+    render();
+  }
+}
+
+function togglePaymentLock(id) {
+  if (userRole !== 'superadmin') return;
+  const m = members.find(x => x.id === id);
+  if (m) {
+    if (!m.paymentLocked && !m.paid) {
+      alert("Payment can only be locked when marked as Paid.");
+      return;
+    }
+    m.paymentLocked = !m.paymentLocked;
+    saveStateToStorage();
+    render();
+  }
+}
+
+function toggleWinnerLock(id) {
+  if (userRole !== 'superadmin') return;
+  const m = members.find(x => x.id === id);
+  if (m && !m.protected) {
+    m.winnerLocked = !m.winnerLocked;
+    saveStateToStorage();
+    render();
+  }
+}
+
+function markAllPaid() {
+  if (userRole !== 'superadmin') return;
+  members.forEach(m => {
+    if (!m.paymentLocked) {
+      m.paid = true;
+    }
+  });
+  
+  cycleCodes.forEach(code => {
+    if (monthlyHistory[code] && !monthlyHistory[code].winnerLocked) {
+      monthlyHistory[code].membersSnapshot.forEach(sm => {
+        let liveM = members.find(lm => lm.name === sm.name);
+        if (liveM && !liveM.paymentLocked) {
+          sm.paid = true;
+        }
+      });
+    }
+  });
+
+  saveStateToStorage();
+  render();
+}
+
+function openAssignMonthModal(memberId) {
+  if (userRole !== 'superadmin') return;
+  const m = members.find(x => x.id === memberId);
+  if (!m || m.protected) return;
+
+  pendingAssignMemberId = memberId;
+  document.getElementById('assignMemberName').textContent = m.name;
+  document.getElementById('assignMonthModal').classList.add('show');
+}
+
+function confirmAssignMonth() {
+  if (!pendingAssignMemberId || userRole !== 'superadmin') return;
+  const m = members.find(x => x.id === pendingAssignMemberId);
+  const selectedCode = document.getElementById('assignMonthSelect').value;
+
+  if (m) {
+    m.winner = true;
+    
+    monthlyHistory[selectedCode] = {
+      winner: m.name,
+      membersSnapshot: members.map(x => ({ name: x.name, paid: x.paid, amount: "SAR 1,000" }))
+    };
+
+    resetContributionsForNewCycle();
+
+    saveStateToStorage();
+    render();
+    closeModal('assignMonthModal');
+    pendingAssignMemberId = null;
+    alert(`${m.name} assigned as winner for ${selectedCode}! Contributions synchronized and reset to Unpaid.`);
+  }
+}
+
+function removeWinnerStatus(memberId) {
+  if (userRole !== 'superadmin') return;
+  const m = members.find(x => x.id === memberId);
+  if (m && (m.protected || m.winnerLocked)) {
+    alert(`${m.name}'s winner selection is locked. Unlock the winner selection before removing.`);
+    return;
+  }
+  if (m && confirm(`Remove winner status from ${m.name}?`)) {
+    m.winner = false;
+    m.winnerLocked = false;
+    cycleCodes.forEach(code => {
+      if (monthlyHistory[code] && monthlyHistory[code].winner === m.name) {
+        monthlyHistory[code] = null;
+      }
+    });
+    saveStateToStorage();
+    render();
+  }
+}
+
+function removeCycleWinnerHistory(code) {
+  if (userRole !== 'superadmin') return;
+  if (code === 'Nov') {
+    alert("November winner history for Midhun is protected.");
+    return;
+  }
+  const currentWinner = monthlyHistory[code] ? monthlyHistory[code].winner : null;
+  const m = members.find(x => x.name === currentWinner);
+
+  if (m && m.winnerLocked) {
+    alert(`Winner selection for ${m.name} is locked.`);
+    return;
+  }
+
+  if (confirm(`Remove winner history for ${code}?`)) {
+    monthlyHistory[code] = null;
+    if (m && !m.protected && !m.winnerLocked) {
+      m.winner = false;
+    }
+    saveStateToStorage();
+    render();
+  }
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('show');
+  clearInterval(popupInterval);
+  clearInterval(nameRollerInterval);
+}
+
+function startDrawPopup() {
+  if (userRole !== 'superadmin' && userRole !== 'admin') return;
+  const eligible = members.filter(m => !m.winner);
+  if (!eligible.length) {
+    alert("All members have won! Chitty cycle completed.");
+    return;
+  }
+
+  document.getElementById('drawPopupContent').style.display = 'block';
+  document.getElementById('drawWinnerContent').style.display = 'none';
+  
+  let timeLeft = 10;
+  document.getElementById('popupTimerNum').textContent = timeLeft;
+  document.getElementById('drawPopupModal').classList.add('show');
+
+  nameRollerInterval = setInterval(() => {
+    let randM = eligible[Math.floor(Math.random() * eligible.length)];
+    document.getElementById('popupRollerText').textContent = "Randomizing: " + randM.name + "...";
+  }, 80);
+
+  popupInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById('popupTimerNum').textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(popupInterval);
+      clearInterval(nameRollerInterval);
+
+      const randomIndex = Math.floor(Math.random() * eligible.length);
+      pendingWinner = eligible[randomIndex];
+      
+      document.getElementById('drawPopupContent').style.display = 'none';
+      document.getElementById('drawWinnerContent').style.display = 'block';
+      document.getElementById('popupWinnerName').textContent = pendingWinner.name;
+
+      createConfettiShower();
+    }
+  }, 1000);
+}
+
+function createConfettiShower() {
+  const card = document.getElementById('drawModalCard');
+  const oldParticles = card.querySelectorAll('.confetti-particle');
+  oldParticles.forEach(p => p.remove());
+
+  const colors = ['#315efb', '#12a889', '#f59e0b', '#ef4444', '#8b5cf6'];
+  for (let i = 0; i < 35; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'confetti-particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.animationDuration = (1.2 + Math.random() * 1.5) + 's';
+    particle.style.animationDelay = (Math.random() * 0.5) + 's';
+    card.appendChild(particle);
+  }
+}
+
+function confirmPopupWinner() {
+  if (!pendingWinner) return;
+  
+  const targetCycleIndex = getNextOpenCycleIndex();
+  const activeCode = cycleCodes[targetCycleIndex];
+  
+  monthlyHistory[activeCode] = {
+    winner: pendingWinner.name,
+    membersSnapshot: members.map(m => ({ name: m.name, paid: m.paid, amount: "SAR 1,000" }))
+  };
+
+  pendingWinner.winner = true;
+
+  resetContributionsForNewCycle();
+
+  saveStateToStorage();
+  closeModal('drawPopupModal');
+  switchTab(activeCode);
+  render();
+  pendingWinner = null;
+  alert(`Winner confirmed for ${activeCode}! Contributions synchronized to history and active records reset to Unpaid.`);
+}
+
+function switchTab(monthCode) {
+  const buttons = document.querySelectorAll('#historyTabs .tab-btn');
+  buttons.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.textContent.includes(monthCode)) {
+      btn.classList.add('active');
+    }
+  });
+
+  const contents = document.querySelectorAll('.tab-content');
+  contents.forEach(c => c.classList.remove('active'));
+  const targetTab = document.getElementById(`tab-${monthCode}`);
+  if (targetTab) {
+    targetTab.classList.add('active');
+  }
+}
+
+function updateCountdown() {
+  const activeCycleIndex = getNextOpenCycleIndex();
+  const targetDateStr = cycleDates[activeCycleIndex] + " 00:00:00";
+  const drawDate = new Date(targetDateStr).getTime();
+  const now = new Date().getTime();
+  const diff = drawDate - now;
+
+  if (diff > 0) {
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+    const cdDays = document.getElementById('cdDays');
+    const cdHours = document.getElementById('cdHours');
+    const cdMins = document.getElementById('cdMins');
+    const cdSecs = document.getElementById('cdSecs');
+    if (cdDays) cdDays.textContent = String(days).padStart(2, '0');
+    if (cdHours) cdHours.textContent = String(hours).padStart(2, '0');
+    if (cdMins) cdMins.textContent = String(mins).padStart(2, '0');
+    if (cdSecs) cdSecs.textContent = String(secs).padStart(2, '0');
+
+    const briefCdDays = document.getElementById('briefCdDays');
+    const briefCdHours = document.getElementById('briefCdHours');
+    const briefCdMins = document.getElementById('briefCdMins');
+    const briefCdSecs = document.getElementById('briefCdSecs');
+    if (briefCdDays) briefCdDays.textContent = String(days).padStart(2, '0');
+    if (briefCdHours) briefCdHours.textContent = String(hours).padStart(2, '0');
+    if (briefCdMins) briefCdMins.textContent = String(mins).padStart(2, '0');
+    if (briefCdSecs) briefCdSecs.textContent = String(secs).padStart(2, '0');
+  } else {
+    ['cdDays', 'cdHours', 'cdMins', 'cdSecs', 'briefCdDays', 'briefCdHours', 'briefCdMins', 'briefCdSecs'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = '00';
+    });
+  }
+}
+
+setInterval(updateCountdown, 1000);
+updateCountdown();
+</script>
+</body>
+</html>
