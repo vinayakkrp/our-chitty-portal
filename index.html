@@ -205,7 +205,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
           <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;"><span style="color:#718096">Total Pool Amount</span><b>SAR 14,000</b></div>
         </section>
 
-        <!-- Live Countdown Timer on Dashboard (Explicitly styled and synced) -->
+        <!-- Live Countdown Timer on Dashboard (Synced with Monthly Draw Countdown) -->
         <section class="panel">
           <div class="panel-title"><div><h2>Next draw countdown</h2><div class="sub" id="countdownSubLabel">Time remaining for upcoming December winner draw (26 Nov 2026)</div></div></div>
           <div class="countdown-container" id="briefCountdownTimer">
@@ -236,9 +236,9 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
 
         <!-- Draw Control Panel for Superadmin only in Dashboard -->
         <section class="panel" id="dashDevDrawPanel" style="display:none; background:linear-gradient(140deg,#182c49,#263f66); color:white;">
-          <div class="panel-title"><h2 style="color:white;" id="devControlTitle">Draw Control</h2><span class="pill" style="background:#315efb;color:#fff;" id="devControlPill">Test Mode</span></div>
-          <p style="font-size:12px;color:#c1cee0;margin-bottom:15px;" id="devControlDesc">Trigger test draws directly from the dashboard.</p>
-          <button class="btn-dash btn-light" onclick="triggerBroadcastDraw()">✦ &nbsp; START TEST DRAW NOW</button>
+          <div class="panel-title"><h2 style="color:white;" id="devControlTitle">Draw Control</h2></div>
+          <p style="font-size:12px;color:#c1cee0;margin-bottom:15px;" id="devControlDesc">Trigger draws directly from the dashboard.</p>
+          <button class="btn-dash btn-light" onclick="triggerBroadcastDraw()">✦ &nbsp; START DRAW NOW</button>
         </section>
       </div>
     </div>
@@ -273,7 +273,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
         </div>
         <div class="draw-meta"><div>TOTAL CHITTY<b>SAR 14,000</b></div><div>ELIGIBLE MEMBERS<b id="drawEligible">13</b></div></div>
         
-        <button class="btn-dash btn-light" id="drawBtn" onclick="triggerBroadcastDraw()" style="display:none; margin-top:15px;">✦ &nbsp; START RANDOM DRAW</button>
+        <button class="btn-dash btn-light" id="drawBtn" onclick="triggerBroadcastDraw()" style="display:none; margin-top:15px;">✦ &nbsp; START DRAW NOW</button>
       </div>
       <div class="note" id="drawControlNote">Note: Draw trigger is available for Superadmin users.</div>
     </section>
