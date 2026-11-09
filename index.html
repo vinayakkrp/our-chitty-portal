@@ -89,7 +89,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
 
 /* Tabs for History Months */
 .tabs-header{display:flex;gap:8px;margin-bottom:15px;border-bottom:1px solid var(--line);padding-bottom:10px;overflow-x:auto}
-.tab-btn{background:#eef1f6;border:0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}
+.tab-btn{background:#eef1f6;border:0;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap}
 .tab-btn.active{background:var(--blue);color:#fff}
 .tab-content{display:none}
 .tab-content.active{display:block}
@@ -190,7 +190,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
   <section class="cards">
     <div class="card stat"><div class="stat-head">Total Members <span class="stat-icon">♙</span></div><strong id="totalMembersCount">14</strong><small>Registered group members</small></div>
     <div class="card stat"><div class="stat-head">Monthly Collection <span class="stat-icon">₹</span></div><strong id="collection">SAR 14,000</strong><small>14 members × SAR 1,000</small></div>
-    <div class="card stat"><div class="stat-head">Chitty Turn <span class="stat-icon">▣</span></div><strong id="activeCycleLabel">December</strong><small>Active draw cycle</small></div>
+    <div class="card stat"><div class="stat-head">Chitty Turn <span class="stat-icon">▣</span></div><strong id="activeCycleLabel">Draw 2</strong><small>Next draw on 26 Nov 2026</small></div>
     <div class="card stat"><div class="stat-head">Draw Eligible <span class="stat-icon">✦</span></div><strong id="eligibleCount">13</strong><small>Members not yet selected</small></div>
   </section>
 
@@ -199,15 +199,15 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
     <div class="grid">
       <div>
         <section class="panel">
-          <div class="panel-title"><div><h2>Chitty brief summary</h2><div class="sub">Current active cycle quick status</div></div><span class="pill" id="dashCyclePill">December Cycle</span></div>
-          <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:#718096">Next Open Draw Month</span><b id="briefCycleName">December 2026</b></div>
+          <div class="panel-title"><div><h2>Chitty brief summary</h2><div class="sub">Current active cycle quick status</div></div><span class="pill" id="dashCyclePill">2nd Draw Cycle</span></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:#718096">Next Open Draw Month</span><b id="briefCycleName">Draw 2 (26 Nov 2026)</b></div>
           <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:#718096">Next Draw Date</span><b id="briefDrawDate">26 Nov 2026</b></div>
           <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;"><span style="color:#718096">Total Pool Amount</span><b>SAR 14,000</b></div>
         </section>
 
         <!-- Live Countdown Timer on Dashboard (Synced with Monthly Draw Countdown) -->
         <section class="panel">
-          <div class="panel-title"><div><h2>Next draw countdown</h2><div class="sub" id="countdownSubLabel">Time remaining for upcoming December winner draw (26 Nov 2026)</div></div></div>
+          <div class="panel-title"><div><h2>Next draw countdown</h2><div class="sub" id="countdownSubLabel">Time remaining for upcoming 2nd Draw (26 Nov 2026)</div></div></div>
           <div class="countdown-container" id="briefCountdownTimer">
             <div class="cd-box"><b id="briefCdDays" style="font-size:16px;color:var(--navy);">00</b><span>Days</span></div>
             <div class="cd-box"><b id="briefCdHours" style="font-size:16px;color:var(--navy);">00</b><span>Hours</span></div>
@@ -219,7 +219,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
 
         <!-- Dynamic Winner History List inside Dashboard -->
         <section class="panel">
-          <div class="panel-title"><div><h2>Winner History Log</h2><div class="sub">All winning members by assigned month</div></div></div>
+          <div class="panel-title"><div><h2>Winner History Log</h2><div class="sub">All winning members by draw turn</div></div></div>
           <div id="dashWinnerListLog"></div>
         </section>
       </div>
@@ -228,9 +228,9 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
         <section class="panel">
           <div class="panel-title"><div><h2>Recent highlights</h2><div class="sub">Latest group activities</div></div></div>
           <div style="font-size:12px;color:var(--muted);line-height:1.6">
-            <p id="dashPrizedSummary"><b>November Prized Person:</b> Midhun (SAR 14,000 awarded on Oct 26).</p>
+            <p id="dashPrizedSummary"><b>1st Draw Winner:</b> Midhun (SAR 14,000 awarded on Oct 26, 2026).</p>
             <p id="dashProgressSummary"><b>Cycle Progress:</b> 1 of 14 turns completed.</p>
-            <p><b>Rules:</b> True random selection with repeat winner prevention strictly enforced.</p>
+            <p><b>Rules:</b> 14 total turns until all 14 members win once.</p>
           </div>
         </section>
 
@@ -264,7 +264,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
       <div class="draw-box">
         <div class="draw-kicker">Random Selection · SAR 14,000</div>
         <h3 id="drawHeadingText">Who's taking home the pool?</h3>
-        <p id="drawDescText">The next random draw is being prepared.</p>
+        <p id="drawDescText">The 2nd draw is scheduled for 26 Nov 2026.</p>
         <div class="countdown-container" id="countdownTimer">
           <div class="cd-box"><b id="cdDays">00</b><span>Days</span></div>
           <div class="cd-box"><b id="cdHours">00</b><span>Hours</span></div>
@@ -295,19 +295,15 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
   <!-- ================= VIEW 5: DRAW & CONTRIBUTION HISTORY ================= -->
   <div class="view-section" id="view-history">
     <section class="panel">
-      <div class="panel-title"><div><h2>Draw & contribution history archive</h2><div class="sub">Archived month-by-month results & individual payment records</div></div></div>
+      <div class="panel-title"><div><h2>Draw & contribution history archive</h2><div class="sub">Archived draw-by-draw results & individual payment records (14 Total Draws)</div></div></div>
       
       <div class="tabs-header" id="historyTabs">
-        <button class="tab-btn active" onclick="switchTab('Nov')">November</button>
-        <button class="tab-btn" onclick="switchTab('Dec')">December</button>
-        <button class="tab-btn" onclick="switchTab('Jan')">January</button>
-        <button class="tab-btn" onclick="switchTab('Feb')">February</button>
+        <!-- Dynamically rendered tabs for all 14 draws -->
       </div>
 
-      <div class="tab-content active" id="tab-Nov"></div>
-      <div class="tab-content" id="tab-Dec"></div>
-      <div class="tab-content" id="tab-Jan"></div>
-      <div class="tab-content" id="tab-Feb"></div>
+      <div id="historyTabsContentContainer">
+        <!-- Dynamically rendered tab contents -->
+      </div>
     </section>
   </div>
 
@@ -315,17 +311,14 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
 </div>
 </div>
 
-<!-- Modal for Assigning Winner to Specific Month -->
+<!-- Modal for Assigning Winner to Specific Draw Turn -->
 <div class="modal" id="assignMonthModal">
   <div class="modal-card animate-pop">
     <div class="eyebrow" id="assignModalEyebrow">SUPERADMIN MANUAL ASSIGNMENT</div>
-    <h2>Select Winning Month</h2>
-    <p>Assign <b id="assignMemberName" style="color:var(--blue)">Member</b> as the prized winner for a specific month cycle:</p>
+    <h2>Select Winning Draw Turn</h2>
+    <p>Assign <b id="assignMemberName" style="color:var(--blue)">Member</b> as the prized winner for a specific draw turn:</p>
     <select id="assignMonthSelect" class="form-input" style="margin:20px 0;">
-      <option value="Nov">November 2026</option>
-      <option value="Dec">December 2026</option>
-      <option value="Jan">January 2027</option>
-      <option value="Feb">February 2027</option>
+      <!-- Populated dynamically -->
     </select>
     <div class="modal-actions">
       <button class="btn-dash btn-primary" onclick="confirmAssignMonth()">Assign & Save</button>
@@ -379,15 +372,31 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let userRole = localStorage.getItem('chitty_role') || 'normal'; 
-const cycleNames = ["November", "December", "January", "February"];
-const cycleCodes = ["Nov", "Dec", "Jan", "Feb"];
-const cycleDates = ["26 Oct 2026", "26 Nov 2026", "26 Dec 2026", "26 Jan 2027"];
+
+// Exactly 14 sequential draw turns spanning 14 months so all 14 members participate and win once
+const cycles = [
+  { code: "Draw-1",  name: "1st Draw (Completed)", short: "1st Draw",  date: "26 Oct 2026" },
+  { code: "Draw-2",  name: "2nd Draw (Upcoming)",  short: "2nd Draw",  date: "26 Nov 2026" },
+  { code: "Draw-3",  name: "3rd Draw",             short: "3rd Draw",  date: "26 Dec 2026" },
+  { code: "Draw-4",  name: "4th Draw",             short: "4th Draw",  date: "26 Jan 2027" },
+  { code: "Draw-5",  name: "5th Draw",             short: "5th Draw",  date: "26 Feb 2027" },
+  { code: "Draw-6",  name: "6th Draw",             short: "6th Draw",  date: "26 Mar 2027" },
+  { code: "Draw-7",  name: "7th Draw",             short: "7th Draw",  date: "26 Apr 2027" },
+  { code: "Draw-8",  name: "8th Draw",             short: "8th Draw",  date: "26 May 2027" },
+  { code: "Draw-9",  name: "9th Draw",             short: "9th Draw",  date: "26 Jun 2027" },
+  { code: "Draw-10", name: "10th Draw",            short: "10th Draw", date: "26 Jul 2027" },
+  { code: "Draw-11", name: "11th Draw",            short: "11th Draw", date: "26 Aug 2027" },
+  { code: "Draw-12", name: "12th Draw",            short: "12th Draw", date: "26 Sep 2027" },
+  { code: "Draw-13", name: "13th Draw",            short: "13th Draw", date: "26 Oct 2027" },
+  { code: "Draw-14", name: "14th Draw (Final)",    short: "14th Draw", date: "26 Nov 2027" }
+];
 
 const memberNames = [
   "Aby", "Azher", "Boby", "Darrel", "Midhun", "Nabeel", "Sanu", 
   "Sibin", "Sijo", "Shigith", "Suresh", "Thomas", "Vinayak", "Vijay"
 ];
 
+// Midhun is permanently locked as the 1st draw winner
 const defaultMembers = memberNames.map((name, i) => ({
   id: i + 1,
   name,
@@ -399,13 +408,10 @@ const defaultMembers = memberNames.map((name, i) => ({
 }));
 
 const defaultHistory = {
-  "Nov": {
+  "Draw-1": {
     winner: "Midhun",
     membersSnapshot: memberNames.map(n => ({ name: n, paid: true, amount: "SAR 1,000" }))
-  },
-  "Dec": null,
-  "Jan": null,
-  "Feb": null
+  }
 };
 
 let members = JSON.parse(JSON.stringify(defaultMembers));
@@ -417,15 +423,19 @@ let popupInterval = null;
 let nameRollerInterval = null;
 let localDrawRunning = false;
 
-// 1. Listen for main application state changes
+// Listen for main database updates
 db.ref('chitty_portal_state/data').on('value', (snapshot) => {
   const data = snapshot.val();
   if (data) {
     if (data.members) members = data.members;
     if (data.history) monthlyHistory = data.history;
     
-    if (monthlyHistory["Nov"] && monthlyHistory["Nov"].membersSnapshot) {
-      monthlyHistory["Nov"].membersSnapshot.forEach(sm => { sm.paid = true; });
+    // Always preserve Midhun's 1st draw record
+    if (!monthlyHistory["Draw-1"] || monthlyHistory["Draw-1"].winner !== "Midhun") {
+      monthlyHistory["Draw-1"] = {
+        winner: "Midhun",
+        membersSnapshot: memberNames.map(n => ({ name: n, paid: true, amount: "SAR 1,000" }))
+      };
     }
   } else {
     saveStateToStorage();
@@ -433,7 +443,7 @@ db.ref('chitty_portal_state/data').on('value', (snapshot) => {
   render();
 });
 
-// 2. Listen specifically for broadcast draw triggers across all connected screens
+// Listen for real-time broadcast draw signals across devices
 db.ref('chitty_portal_state/activeDrawSignal').on('value', (snapshot) => {
   const signal = snapshot.val();
   if (signal && signal.winnerName && !localDrawRunning) {
@@ -459,7 +469,7 @@ function triggerBroadcastDraw() {
   if (userRole !== 'superadmin') return;
   const eligible = members.filter(m => !m.winner);
   if (!eligible.length) {
-    alert("All members have won! Chitty cycle completed.");
+    alert("All 14 members have won! The full Chitty cycle is completed.");
     return;
   }
 
@@ -502,7 +512,6 @@ function runClientDrawAnimation(targetWinnerName) {
       document.getElementById('drawWinnerContent').style.display = 'block';
       document.getElementById('popupWinnerName').textContent = targetWinnerName;
 
-      // Only Superadmin sees the confirm button; admin/normal view waiting notice with close button
       const canSave = (userRole === 'superadmin');
       document.getElementById('winnerConfirmActionBtns').style.display = canSave ? 'flex' : 'none';
       document.getElementById('winnerWaitingNotice').style.display = canSave ? 'none' : 'block';
@@ -521,13 +530,14 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Always pick the next open sequential turn slot (1 through 14)
 function getNextOpenCycleIndex() {
-  for (let i = 0; i < cycleCodes.length; i++) {
-    if (!monthlyHistory[cycleCodes[i]] || !monthlyHistory[cycleCodes[i]].winner) {
+  for (let i = 0; i < cycles.length; i++) {
+    if (!monthlyHistory[cycles[i].code] || !monthlyHistory[cycles[i].code].winner) {
       return i;
     }
   }
-  return cycleCodes.length - 1;
+  return cycles.length - 1;
 }
 
 function resetContributionsForNewCycle() {
@@ -621,7 +631,7 @@ function render() {
     let winnerActionHtml = '-';
     if (isSuperadmin) {
       if (m.protected) {
-        winnerActionHtml = `<span style="font-size:10px;color:var(--muted);font-weight:700;">Nov Winner (Locked)</span>`;
+        winnerActionHtml = `<span style="font-size:10px;color:var(--muted);font-weight:700;">1st Draw Winner (Locked)</span>`;
       } else if (m.winner) {
         winnerActionHtml = `
           <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
@@ -663,18 +673,18 @@ function render() {
   document.getElementById('paymentBar').style.width = (paidCount / totalCount * 100) + '%';
   document.getElementById('collection').textContent = `SAR ${totalCount * 1000}`;
 
-  document.getElementById('activeCycleLabel').textContent = cycleNames[activeCycleIndex];
-  document.getElementById('briefCycleName').textContent = cycleNames[activeCycleIndex] + " 2026";
-  document.getElementById('briefDrawDate').textContent = cycleDates[activeCycleIndex];
-  document.getElementById('dashCyclePill').textContent = cycleNames[activeCycleIndex] + " Cycle";
+  const currentCycle = cycles[activeCycleIndex];
+  document.getElementById('activeCycleLabel').textContent = currentCycle.short;
+  document.getElementById('briefCycleName').textContent = currentCycle.name;
+  document.getElementById('briefDrawDate').textContent = currentCycle.date;
+  document.getElementById('dashCyclePill').textContent = currentCycle.short + " Cycle";
 
-  const nextMonthName = cycleNames[activeCycleIndex];
-  document.getElementById('drawDescText').textContent = `Next open draw cycle: ${nextMonthName}. Scheduled for ${cycleDates[activeCycleIndex]}.`;
+  document.getElementById('drawDescText').textContent = `Next open turn: ${currentCycle.name}. Scheduled for ${currentCycle.date}.`;
 
-  document.getElementById('dashPrizedSummary').innerHTML = `<b>November Prized Person:</b> Midhun (SAR 14,000 awarded on Oct 26).`;
+  document.getElementById('dashPrizedSummary').innerHTML = `<b>1st Draw Winner:</b> Midhun (SAR 14,000 awarded on Oct 26, 2026).`;
   document.getElementById('dashProgressSummary').innerHTML = `<b>Cycle Progress:</b> ${totalCount - eligibleCount} of ${totalCount} turns completed.`;
 
-  document.getElementById('countdownSubLabel').textContent = `Time remaining for upcoming ${nextMonthName} winner draw (${cycleDates[activeCycleIndex]})`;
+  document.getElementById('countdownSubLabel').textContent = `Time remaining for upcoming ${currentCycle.name} (${currentCycle.date})`;
 
   renderDashboardWinnerLog();
 
@@ -721,8 +731,15 @@ function render() {
     actionsHeaderLabel.textContent = isSuperadmin ? "Superadmin Actions" : "Management Actions";
   }
 
-  renderHistoryTabsContent();
+  renderHistoryTabsAndContent();
+  renderAssignMonthOptions();
   updateCountdown();
+}
+
+function renderAssignMonthOptions() {
+  const select = document.getElementById('assignMonthSelect');
+  if (!select) return;
+  select.innerHTML = cycles.map(c => `<option value="${c.code}">${c.name} (${c.date})</option>`).join('');
 }
 
 function renderDashboardWinnerLog() {
@@ -730,8 +747,8 @@ function renderDashboardWinnerLog() {
   if (!container) return;
 
   let html = '';
-  cycleCodes.forEach(code => {
-    const data = monthlyHistory[code];
+  cycles.forEach(c => {
+    const data = monthlyHistory[c.code];
     if (data && data.winner) {
       const mem = members.find(m => m.name === data.winner);
       const isWinnerLocked = mem && mem.winnerLocked;
@@ -741,7 +758,7 @@ function renderDashboardWinnerLog() {
           <div class="medal">🏆</div>
           <div>
             <b>${data.winner} ${isWinnerLocked ? '🔒' : ''}</b>
-            <small>Prized Person · ${code} Cycle</small>
+            <small>Prized Person · ${c.name}</small>
           </div>
           <div class="amount">SAR ${totalCount * 1000}</div>
         </div>
@@ -755,28 +772,37 @@ function renderDashboardWinnerLog() {
   container.innerHTML = html;
 }
 
-function renderHistoryTabsContent() {
+function renderHistoryTabsAndContent() {
   const totalCount = members.length;
   const isSuperadmin = (userRole === 'superadmin');
 
-  cycleCodes.forEach(code => {
-    const data = monthlyHistory[code];
-    const tabContainer = document.getElementById(`tab-${code}`);
-    if (!tabContainer) return;
+  const tabsHeader = document.getElementById('historyTabs');
+  const contentContainer = document.getElementById('historyTabsContentContainer');
+  if (!tabsHeader || !contentContainer) return;
+
+  let activeTabCode = document.querySelector('#historyTabs .tab-btn.active')?.getAttribute('data-code') || cycles[0].code;
+
+  tabsHeader.innerHTML = cycles.map(c => `
+    <button class="tab-btn ${c.code === activeTabCode ? 'active' : ''}" data-code="${c.code}" onclick="switchTab('${c.code}')">${c.short}</button>
+  `).join('');
+
+  contentContainer.innerHTML = cycles.map(c => {
+    const data = monthlyHistory[c.code];
+    let contentHtml = '';
 
     if (!data) {
-      tabContainer.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:15px 0;text-align:center;">No draw conducted yet for ${code}. History will appear here once finalized.</div>`;
+      contentHtml = `<div style="font-size:12px;color:var(--muted);padding:15px 0;text-align:center;">No draw conducted yet for ${c.name}. History will appear here once finalized.</div>`;
     } else {
-      let isProtected = (code === 'Nov');
+      let isProtected = (c.code === 'Draw-1');
       let mem = members.find(m => m.name === data.winner);
       let isWinnerLocked = mem && mem.winnerLocked;
-      let html = `
+      contentHtml = `
         <div style="background:#f8fafc;padding:12px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line);">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div><b>Prized Person: ${data.winner} ${isWinnerLocked ? '🔒' : ''}</b><small style="display:block;color:var(--muted)">Pool Amount: SAR ${totalCount * 1000}</small></div>
+            <div><b>Prized Person: ${data.winner} ${isWinnerLocked ? '🔒' : ''}</b><small style="display:block;color:var(--muted)">Pool Amount: SAR ${totalCount * 1000} (${c.date})</small></div>
             <div style="display:flex;gap:10px;align-items:center;">
               <span class="status winner">Completed</span>
-              ${isSuperadmin && !isProtected && !isWinnerLocked ? `<button class="btn-dash btn-danger" style="padding:4px 8px;font-size:10px" onclick="removeCycleWinnerHistory('${code}')">Remove Winner History</button>` : ''}
+              ${isSuperadmin && !isProtected && !isWinnerLocked ? `<button class="btn-dash btn-danger" style="padding:4px 8px;font-size:10px" onclick="removeCycleWinnerHistory('${c.code}')">Remove Winner History</button>` : ''}
             </div>
           </div>
         </div>
@@ -788,12 +814,17 @@ function renderHistoryTabsContent() {
       `;
       data.membersSnapshot.forEach(m => {
         let statusBadge = m.paid ? '<span class="status paid">Paid</span>' : '<span class="status pending">Unpaid</span>';
-        html += `<tr><td>${m.name}</td><td>${m.amount}</td><td>${statusBadge}</td></tr>`;
+        contentHtml += `<tr><td>${m.name}</td><td>${m.amount}</td><td>${statusBadge}</td></tr>`;
       });
-      html += `</tbody></table></div>`;
-      tabContainer.innerHTML = html;
+      contentHtml += `</tbody></table></div>`;
     }
-  });
+
+    return `
+      <div class="tab-content ${c.code === activeTabCode ? 'active' : ''}" id="tab-${c.code}">
+        ${contentHtml}
+      </div>
+    `;
+  }).join('');
 }
 
 function togglePaid(id) {
@@ -806,9 +837,9 @@ function togglePaid(id) {
     }
     m.paid = !m.paid;
     
-    cycleCodes.forEach(code => {
-      if (monthlyHistory[code] && !monthlyHistory[code].winnerLocked) {
-        let snapMem = monthlyHistory[code].membersSnapshot.find(sm => sm.name === m.name);
+    cycles.forEach(c => {
+      if (monthlyHistory[c.code] && !monthlyHistory[c.code].winnerLocked) {
+        let snapMem = monthlyHistory[c.code].membersSnapshot.find(sm => sm.name === m.name);
         if (snapMem) {
           snapMem.paid = m.paid;
         }
@@ -849,9 +880,9 @@ function markAllPaid() {
     }
   });
   
-  cycleCodes.forEach(code => {
-    if (monthlyHistory[code] && !monthlyHistory[code].winnerLocked) {
-      monthlyHistory[code].membersSnapshot.forEach(sm => {
+  cycles.forEach(c => {
+    if (monthlyHistory[c.code] && !monthlyHistory[c.code].winnerLocked) {
+      monthlyHistory[c.code].membersSnapshot.forEach(sm => {
         let liveM = members.find(lm => lm.name === sm.name);
         if (liveM && !liveM.paymentLocked) {
           sm.paid = true;
@@ -877,6 +908,7 @@ function confirmAssignMonth() {
   if (!pendingAssignMemberId || userRole !== 'superadmin') return;
   const m = members.find(x => x.id === pendingAssignMemberId);
   const selectedCode = document.getElementById('assignMonthSelect').value;
+  const targetCycle = cycles.find(c => c.code === selectedCode);
 
   if (m) {
     m.winner = true;
@@ -891,7 +923,7 @@ function confirmAssignMonth() {
     saveStateToStorage();
     closeModal('assignMonthModal');
     pendingAssignMemberId = null;
-    alert(`${m.name} assigned as winner for ${selectedCode}! Contributions synchronized and reset to Unpaid.`);
+    alert(`${m.name} assigned as winner for ${targetCycle.name}! Contributions synchronized and reset to Unpaid.`);
   }
 }
 
@@ -905,9 +937,9 @@ function removeWinnerStatus(memberId) {
   if (m && confirm(`Remove winner status from ${m.name}?`)) {
     m.winner = false;
     m.winnerLocked = false;
-    cycleCodes.forEach(code => {
-      if (monthlyHistory[code] && monthlyHistory[code].winner === m.name) {
-        monthlyHistory[code] = null;
+    cycles.forEach(c => {
+      if (monthlyHistory[c.code] && monthlyHistory[c.code].winner === m.name) {
+        monthlyHistory[c.code] = null;
       }
     });
     saveStateToStorage();
@@ -916,8 +948,8 @@ function removeWinnerStatus(memberId) {
 
 function removeCycleWinnerHistory(code) {
   if (userRole !== 'superadmin') return;
-  if (code === 'Nov') {
-    alert("November winner history for Midhun is protected.");
+  if (code === 'Draw-1') {
+    alert("1st Draw winner history for Midhun is protected.");
     return;
   }
   const currentWinner = monthlyHistory[code] ? monthlyHistory[code].winner : null;
@@ -928,7 +960,8 @@ function removeCycleWinnerHistory(code) {
     return;
   }
 
-  if (confirm(`Remove winner history for ${code}?`)) {
+  const targetCycle = cycles.find(c => c.code === code);
+  if (confirm(`Remove winner history for ${targetCycle.name}?`)) {
     monthlyHistory[code] = null;
     if (m && !m.protected && !m.winnerLocked) {
       m.winner = false;
@@ -965,9 +998,9 @@ function confirmPopupWinner() {
   if (!pendingWinner) return;
   
   const targetCycleIndex = getNextOpenCycleIndex();
-  const activeCode = cycleCodes[targetCycleIndex];
+  const activeCycle = cycles[targetCycleIndex];
   
-  monthlyHistory[activeCode] = {
+  monthlyHistory[activeCycle.code] = {
     winner: pendingWinner.name,
     membersSnapshot: members.map(m => ({ name: m.name, paid: m.paid, amount: "SAR 1,000" }))
   };
@@ -978,23 +1011,23 @@ function confirmPopupWinner() {
   saveStateToStorage();
   db.ref('chitty_portal_state/activeDrawSignal').remove();
   closeModal('drawPopupModal');
-  switchTab(activeCode);
+  switchTab(activeCycle.code);
   pendingWinner = null;
-  alert(`Winner confirmed for ${activeCode}! Real-time database updated instantly for all members.`);
+  alert(`Winner confirmed for ${activeCycle.name}! Real-time database updated instantly for all members.`);
 }
 
-function switchTab(monthCode) {
+function switchTab(code) {
   const buttons = document.querySelectorAll('#historyTabs .tab-btn');
   buttons.forEach(btn => {
     btn.classList.remove('active');
-    if (btn.textContent.includes(monthCode)) {
+    if (btn.getAttribute('data-code') === code) {
       btn.classList.add('active');
     }
   });
 
   const contents = document.querySelectorAll('.tab-content');
   contents.forEach(c => c.classList.remove('active'));
-  const targetTab = document.getElementById(`tab-${monthCode}`);
+  const targetTab = document.getElementById(`tab-${code}`);
   if (targetTab) {
     targetTab.classList.add('active');
   }
@@ -1002,7 +1035,8 @@ function switchTab(monthCode) {
 
 function updateCountdown() {
   const activeCycleIndex = getNextOpenCycleIndex();
-  const targetDateStr = cycleDates[activeCycleIndex] + " 00:00:00";
+  const targetCycle = cycles[activeCycleIndex];
+  const targetDateStr = targetCycle.date + " 00:00:00";
   const drawDate = new Date(targetDateStr).getTime();
   const now = new Date().getTime();
   const diff = drawDate - now;
