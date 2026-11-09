@@ -234,7 +234,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
           </div>
         </section>
 
-        <!-- Draw Control Panel for Superadmin & Admin directly in Dashboard -->
+        <!-- Draw Control Panel for Superadmin only in Dashboard -->
         <section class="panel" id="dashDevDrawPanel" style="display:none; background:linear-gradient(140deg,#182c49,#263f66); color:white;">
           <div class="panel-title"><h2 style="color:white;" id="devControlTitle">Draw Control</h2><span class="pill" style="background:#315efb;color:#fff;" id="devControlPill">Test Mode</span></div>
           <p style="font-size:12px;color:#c1cee0;margin-bottom:15px;" id="devControlDesc">Trigger test draws directly from the dashboard.</p>
@@ -275,7 +275,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
         
         <button class="btn-dash btn-light" id="drawBtn" onclick="triggerBroadcastDraw()" style="display:none; margin-top:15px;">✦ &nbsp; START RANDOM DRAW</button>
       </div>
-      <div class="note" id="drawControlNote">Note: Draw trigger is available for Superadmin and Admin users.</div>
+      <div class="note" id="drawControlNote">Note: Draw trigger is available for Superadmin users.</div>
     </section>
   </div>
 
@@ -288,7 +288,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
       <div class="actions" style="margin-top:17px" id="paymentToggleAction">
         <button class="btn-dash btn-primary" id="markAllPaidBtn" onclick="markAllPaid()" style="display:none;">Mark all unlocked as Paid</button>
       </div>
-      <div class="note" id="paymentRoleNote">Normal users have view-only access. Login as Superadmin to manage contributions and locks. Admin has view and draw access only.</div>
+      <div class="note" id="paymentRoleNote">Normal users have view-only access. Login as Superadmin to manage contributions and locks. Admin has view access only.</div>
     </section>
   </div>
 
@@ -355,7 +355,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
         <button class="btn-dash" style="background:#eef1f6" onclick="closeModal('drawPopupModal')">Close</button>
       </div>
       <div id="winnerWaitingNotice" style="font-size:12px;color:var(--muted);margin-top:15px;display:none;">
-        Waiting for Superadmin/Admin to finalize and save the draw...
+        Waiting for Superadmin to finalize and save the draw...
       </div>
     </div>
   </div>
@@ -453,7 +453,6 @@ db.ref('chitty_portal_state/activeDrawSignal').on('value', (snapshot) => {
   if (signal && signal.winnerName && !localDrawRunning) {
     runClientDrawAnimation(signal.winnerName);
   } else if (!signal) {
-    // Close modal if signal was removed
     const modal = document.getElementById('drawPopupModal');
     if (modal && modal.classList.contains('show') && !pendingWinner) {
       modal.classList.remove('show');
@@ -471,18 +470,16 @@ function saveStateToStorage() {
 }
 
 function triggerBroadcastDraw() {
-  if (userRole !== 'superadmin' && userRole !== 'admin') return;
+  if (userRole !== 'superadmin') return;
   const eligible = members.filter(m => !m.winner);
   if (!eligible.length) {
     alert("All members have won! Chitty cycle completed.");
     return;
   }
 
-  // Pre-select winner randomly so every connected device lands on the exact same name
   const randomIndex = Math.floor(Math.random() * eligible.length);
   const chosenWinner = eligible[randomIndex];
 
-  // Push broadcast signal to Firebase (this immediately fires the listener on all devices)
   db.ref('chitty_portal_state/activeDrawSignal').set({
     winnerName: chosenWinner.name,
     timestamp: Date.now()
@@ -519,8 +516,8 @@ function runClientDrawAnimation(targetWinnerName) {
       document.getElementById('drawWinnerContent').style.display = 'block';
       document.getElementById('popupWinnerName').textContent = targetWinnerName;
 
-      // Only Superadmin/Admin sees the confirm button; normal members & other admin view waiting notice
-      const canSave = (userRole === 'superadmin' || userRole === 'admin');
+      // Only Superadmin sees the confirm button; admin/normal view waiting notice
+      const canSave = (userRole === 'superadmin');
       document.getElementById('winnerConfirmActionBtns').style.display = canSave ? 'flex' : 'none';
       document.getElementById('winnerWaitingNotice').style.display = canSave ? 'none' : 'block';
 
@@ -721,23 +718,23 @@ function render() {
 
   const drawBtn = document.getElementById('drawBtn');
   if (drawBtn) {
-    drawBtn.style.display = (isSuperadmin || isAdmin) ? 'inline-block' : 'none';
+    drawBtn.style.display = isSuperadmin ? 'inline-block' : 'none';
     drawBtn.disabled = (eligibleCount === 0);
   }
   
   const drawControlNote = document.getElementById('drawControlNote');
   if (drawControlNote) {
-    drawControlNote.textContent = (isSuperadmin || isAdmin) ? "Draw control active: You can trigger monthly draws." : "Draw trigger controls are restricted.";
+    drawControlNote.textContent = isSuperadmin ? "Draw control active: You can trigger monthly draws." : "Draw trigger controls are restricted to Superadmin.";
   }
 
   const dashDevDrawPanel = document.getElementById('dashDevDrawPanel');
   if (dashDevDrawPanel) {
-    dashDevDrawPanel.style.display = (isSuperadmin || isAdmin) ? 'block' : 'none';
+    dashDevDrawPanel.style.display = isSuperadmin ? 'block' : 'none';
   }
 
   const adminControlHint = document.getElementById('adminControlHint');
   if (adminControlHint) {
-    adminControlHint.textContent = isSuperadmin ? "Superadmin Mode: Active (Full management enabled)" : (isAdmin ? "Admin Mode: Active (Draw execution allowed, view-only contributions)" : "Mode: View Only (Normal User)");
+    adminControlHint.textContent = isSuperadmin ? "Superadmin Mode: Active (Full management enabled)" : (isAdmin ? "Admin Mode: Active (View-only contributions)" : "Mode: View Only (Normal User)");
   }
   
   const adminLabel = document.getElementById('adminLabel');
