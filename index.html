@@ -238,7 +238,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
         <section class="panel" id="dashDevDrawPanel" style="display:none; background:linear-gradient(140deg,#182c49,#263f66); color:white;">
           <div class="panel-title"><h2 style="color:white;" id="devControlTitle">Draw Control</h2><span class="pill" style="background:#315efb;color:#fff;" id="devControlPill">Test Mode</span></div>
           <p style="font-size:12px;color:#c1cee0;margin-bottom:15px;" id="devControlDesc">Trigger test draws directly from the dashboard.</p>
-          <button class="btn-dash btn-light" onclick="startDrawPopup()">✦ &nbsp; START TEST DRAW NOW</button>
+          <button class="btn-dash btn-light" onclick="triggerBroadcastDraw()">✦ &nbsp; START TEST DRAW NOW</button>
         </section>
       </div>
     </div>
@@ -273,7 +273,7 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
         </div>
         <div class="draw-meta"><div>TOTAL CHITTY<b>SAR 14,000</b></div><div>ELIGIBLE MEMBERS<b id="drawEligible">13</b></div></div>
         
-        <button class="btn-dash btn-light" id="drawBtn" onclick="startDrawPopup()" style="display:none; margin-top:15px;">✦ &nbsp; START RANDOM DRAW</button>
+        <button class="btn-dash btn-light" id="drawBtn" onclick="triggerBroadcastDraw()" style="display:none; margin-top:15px;">✦ &nbsp; START RANDOM DRAW</button>
       </div>
       <div class="note" id="drawControlNote">Note: Draw trigger is available for Superadmin and Admin users.</div>
     </section>
@@ -350,9 +350,12 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
       <h2 style="margin-top:5px;">We have a winner!</h2>
       <div class="winner-name celebrating" id="popupWinnerName">Member</div>
       <p>Selected entirely at random with zero repeat bias. Pool: SAR 14,000</p>
-      <div class="modal-actions">
+      <div class="modal-actions" id="winnerConfirmActionBtns" style="display:none;">
         <button class="btn-dash btn-primary" onclick="confirmPopupWinner()">Confirm & Save to History</button>
         <button class="btn-dash" style="background:#eef1f6" onclick="closeModal('drawPopupModal')">Close</button>
+      </div>
+      <div id="winnerWaitingNotice" style="font-size:12px;color:var(--muted);margin-top:15px;display:none;">
+        Waiting for Superadmin/Admin to finalize and save the draw...
       </div>
     </div>
   </div>
@@ -426,6 +429,7 @@ let pendingWinner = null;
 let pendingAssignMemberId = null;
 let popupInterval = null;
 let nameRollerInterval = null;
+let localDrawRunning = false;
 
 // Real-time synchronization listener with Firebase Database
 db.ref('chitty_portal_state').on('value', (snapshot) => {
@@ -434,7 +438,11 @@ db.ref('chitty_portal_state').on('value', (snapshot) => {
     if (data.members) members = data.members;
     if (data.history) monthlyHistory = data.history;
     
-    // Ensure historical Nov snapshot members are marked paid
+    // Check if a broadcast draw signal was sent
+    if (data.activeDrawSignal && !localDrawRunning) {
+      runClientDrawAnimation(data.activeDrawSignal.winnerName);
+    }
+
     if (monthlyHistory["Nov"] && monthlyHistory["Nov"].membersSnapshot) {
       monthlyHistory["Nov"].membersSnapshot.forEach(sm => { sm.paid = true; });
     }
@@ -449,6 +457,66 @@ function saveStateToStorage() {
     members: members,
     history: monthlyHistory
   });
+}
+
+// Superadmin/Admin triggers broadcast draw for all connected screens
+function triggerBroadcastDraw() {
+  if (userRole !== 'superadmin' && userRole !== 'admin') return;
+  const eligible = members.filter(m => !m.winner);
+  if (!eligible.length) {
+    alert("All members have won! Chitty cycle completed.");
+    return;
+  }
+
+  // Pre-select winner randomly on server/superadmin side so everyone lands on the exact same winner
+  const randomIndex = Math.floor(Math.random() * eligible.length);
+  const chosenWinner = eligible[randomIndex];
+
+  // Write broadcast signal to Firebase so all browsers trigger the animation together
+  db.ref('chitty_portal_state/activeDrawSignal').set({
+    winnerName: chosenWinner.name,
+    timestamp: Date.now()
+  });
+}
+
+function runClientDrawAnimation(targetWinnerName) {
+  localDrawRunning = true;
+  pendingWinner = members.find(m => m.name === targetWinnerName) || { name: targetWinnerName };
+
+  document.getElementById('drawPopupContent').style.display = 'block';
+  document.getElementById('drawWinnerContent').style.display = 'none';
+  
+  let timeLeft = 10;
+  document.getElementById('popupTimerNum').textContent = timeLeft;
+  document.getElementById('drawPopupModal').classList.add('show');
+
+  const eligible = members.filter(m => !m.winner);
+  nameRollerInterval = setInterval(() => {
+    let randM = eligible.length ? eligible[Math.floor(Math.random() * eligible.length)] : { name: targetWinnerName };
+    document.getElementById('popupRollerText').textContent = "Randomizing: " + randM.name + "...";
+  }, 80);
+
+  popupInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById('popupTimerNum').textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(popupInterval);
+      clearInterval(nameRollerInterval);
+      localDrawRunning = false;
+      
+      document.getElementById('drawPopupContent').style.display = 'none';
+      document.getElementById('drawWinnerContent').style.display = 'block';
+      document.getElementById('popupWinnerName').textContent = targetWinnerName;
+
+      // Only Superadmin/Admin sees the confirm button; normal members see a waiting notice
+      const canSave = (userRole === 'superadmin' || userRole === 'admin');
+      document.getElementById('winnerConfirmActionBtns').style.display = canSave ? 'flex' : 'none';
+      document.getElementById('winnerWaitingNotice').style.display = canSave ? 'none' : 'block';
+
+      createConfettiShower();
+    }
+  }, 1000);
 }
 
 // HTML Modification Protection Logic using MutationObserver
@@ -904,46 +972,8 @@ function closeModal(modalId) {
   document.getElementById(modalId).classList.remove('show');
   clearInterval(popupInterval);
   clearInterval(nameRollerInterval);
-}
-
-function startDrawPopup() {
-  if (userRole !== 'superadmin' && userRole !== 'admin') return;
-  const eligible = members.filter(m => !m.winner);
-  if (!eligible.length) {
-    alert("All members have won! Chitty cycle completed.");
-    return;
-  }
-
-  document.getElementById('drawPopupContent').style.display = 'block';
-  document.getElementById('drawWinnerContent').style.display = 'none';
-  
-  let timeLeft = 10;
-  document.getElementById('popupTimerNum').textContent = timeLeft;
-  document.getElementById('drawPopupModal').classList.add('show');
-
-  nameRollerInterval = setInterval(() => {
-    let randM = eligible[Math.floor(Math.random() * eligible.length)];
-    document.getElementById('popupRollerText').textContent = "Randomizing: " + randM.name + "...";
-  }, 80);
-
-  popupInterval = setInterval(() => {
-    timeLeft--;
-    document.getElementById('popupTimerNum').textContent = timeLeft;
-
-    if (timeLeft <= 0) {
-      clearInterval(popupInterval);
-      clearInterval(nameRollerInterval);
-
-      const randomIndex = Math.floor(Math.random() * eligible.length);
-      pendingWinner = eligible[randomIndex];
-      
-      document.getElementById('drawPopupContent').style.display = 'none';
-      document.getElementById('drawWinnerContent').style.display = 'block';
-      document.getElementById('popupWinnerName').textContent = pendingWinner.name;
-
-      createConfettiShower();
-    }
-  }, 1000);
+  // Clear active draw signal on Firebase when closed
+  db.ref('chitty_portal_state/activeDrawSignal').remove();
 }
 
 function createConfettiShower() {
@@ -978,6 +1008,8 @@ function confirmPopupWinner() {
   resetContributionsForNewCycle();
 
   saveStateToStorage();
+  // Clear signal so modals close everywhere
+  db.ref('chitty_portal_state/activeDrawSignal').remove();
   closeModal('drawPopupModal');
   switchTab(activeCode);
   pendingWinner = null;
