@@ -205,14 +205,14 @@ table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text
           <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;"><span style="color:#718096">Total Pool Amount</span><b>SAR 14,000</b></div>
         </section>
 
-        <!-- Live Countdown Timer on Dashboard (Synced with Monthly Draw Countdown) -->
+        <!-- Live Countdown Timer on Dashboard (Explicitly styled and synced) -->
         <section class="panel">
           <div class="panel-title"><div><h2>Next draw countdown</h2><div class="sub" id="countdownSubLabel">Time remaining for upcoming December winner draw (26 Nov 2026)</div></div></div>
           <div class="countdown-container" id="briefCountdownTimer">
-            <div class="cd-box"><b id="briefCdDays">00</b><span>Days</span></div>
-            <div class="cd-box"><b id="briefCdHours">00</b><span>Hours</span></div>
-            <div class="cd-box"><b id="briefCdMins">00</b><span>Mins</span></div>
-            <div class="cd-box"><b id="briefCdSecs">00</b><span>Secs</span></div>
+            <div class="cd-box"><b id="briefCdDays" style="font-size:16px;color:var(--navy);">00</b><span>Days</span></div>
+            <div class="cd-box"><b id="briefCdHours" style="font-size:16px;color:var(--navy);">00</b><span>Hours</span></div>
+            <div class="cd-box"><b id="briefCdMins" style="font-size:16px;color:var(--navy);">00</b><span>Mins</span></div>
+            <div class="cd-box"><b id="briefCdSecs" style="font-size:16px;color:var(--navy);">00</b><span>Secs</span></div>
           </div>
           <div class="note">Switch to the <b>Monthly Draw</b> tab for detailed management controls.</div>
         </section>
@@ -1025,15 +1025,15 @@ function updateCountdown() {
   if (cdMins) cdMins.textContent = mins;
   if (cdSecs) cdSecs.textContent = secs;
 
-  // Sync and update Dashboard next draw countdown elements
+  // Sync and update Dashboard next draw countdown elements explicitly with dark text color
   const briefCdDays = document.getElementById('briefCdDays');
   const briefCdHours = document.getElementById('briefCdHours');
   const briefCdMins = document.getElementById('briefCdMins');
   const briefCdSecs = document.getElementById('briefCdSecs');
-  if (briefCdDays) briefCdDays.textContent = days;
-  if (briefCdHours) briefCdHours.textContent = hours;
-  if (briefCdMins) briefCdMins.textContent = mins;
-  if (briefCdSecs) briefCdSecs.textContent = secs;
+  if (briefCdDays) { briefCdDays.textContent = days; briefCdDays.style.color = "var(--navy)"; }
+  if (briefCdHours) { briefCdHours.textContent = hours; briefCdHours.style.color = "var(--navy)"; }
+  if (briefCdMins) { briefCdMins.textContent = mins; briefCdMins.style.color = "var(--navy)"; }
+  if (briefCdSecs) { briefCdSecs.textContent = secs; briefCdSecs.style.color = "var(--navy)"; }
 }
 
 setInterval(updateCountdown, 1000);
